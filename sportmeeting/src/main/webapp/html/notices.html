@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../js/jquery-1.5.1.js"></script>
+    <style type="text/css">
+        body {
+            font-size: 20px;
+            /*background-color: #eee;*/
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #999;
+            -webkit-border-radius: 5px;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:vertical:hover {
+            background-color: #666;
+        }
+
+        ::-webkit-scrollbar-thumb:vertical:active {
+            background-color: #333;
+        }
+
+        ::-webkit-scrollbar-button {
+            display: none;
+        }
+
+        ::-webkit-scrollbar-track {
+            background-color: #f1f1f1;
+        }
+        .toolbar {
+            border: 1px solid #ccc;
+            font-size: 15px;
+            width: 1150px;
+        }
+        .text {
+            border: 1px solid #ccc;
+            height: 450px;
+            width: 1150px;
+        }
+        #textarea{
+            margin-top: 30px;
+        }
+        .btn{
+            position: absolute;
+            left: 1110px;
+        }
+        .btn div{
+            height: 30px;
+            width: 50px;
+            background-color: #e6e6e6;
+            border: solid 1px #d9d9d9;
+            font-size: 80%;
+            text-align: center;
+            line-height: 30px;
+            cursor: pointer;
+            margin: 0 auto;
+        }
+        .btn div:hover{
+            background-color: #B0AFAF;
+        }
+        .mvBox{
+            height:15px;
+            background:#F5FAFD url(../images/test2.jpg) no-repeat left center;
+            width:471px;
+            position:relative;
+            padding:0 30px;
+            margin:0 auto;
+        }
+        .mvBtn{
+            position:absolute;
+            left:50px;
+            top:0;
+        }
+        .mvTxt{
+            height:50px;
+            line-height:50px;
+            width:531px;
+            text-align:center;
+            font-size:30px;
+            color:#29B6FF;
+            font-family:Arial;
+            margin:0 auto;
+        }
+        #loading{
+            position: absolute;
+            display: none;
+            top: 200px;
+            left: 315px;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body>
+<div id="loading" style="width: 600px;">
+    <div class="mvTxt">Loading<span class="mvSq">.</span><span class="mvSq">.</span><span class="mvSq">.</span>
+    </div>
+    <div class="mvBox">
+        <img class="mvBtn" src="../images/test1.jpg">
+    </div>
+    <script type="text/javascript">
+        var delVal=50;
+        function autoMove(){
+            delVal++;
+            if(delVal>400){
+                delVal=50;
+            }
+            $(".mvBtn").css("left",delVal);
+        }
+        setInterval(autoMove,8);
+        var deNum=0;
+        function autoTsq(){
+            $(".mvSq").css("color","#F5FAFD");
+            setTimeout(function(){$(".mvSq").eq(0).css("color","#29B6FF")},0);
+            setTimeout(function(){$(".mvSq").eq(1).css("color","#29B6FF")},500);
+            setTimeout(function(){$(".mvSq").eq(2).css("color","#29B6FF")},1000);
+        }
+        setInterval(autoTsq,1500);
+    </script>
+</div>
+<div style="margin-left: 30px" id="big">
+    <div>
+        <strong style="font-size: 20px;color: #0e90d2; font-weight: 700">发布通知</strong> /
+        <small style="font-size: 80%">Notice</small>
+    </div>
+    <div id="textarea">
+        <div id="div1" class="toolbar">
+            <div class="btn">
+                <div onclick="develop()">发布</div>
+            </div>
+        </div>
+        <div style="padding: 5px 0; color: #ccc"></div>
+        <div id="div2" class="text"></div>
+        <script type="text/javascript" src="../js/wangEditor.js"></script>
+        <script type="text/javascript">
+            var E = window.wangEditor
+            var editor = new E('#div1', '#div2')
+            editor.create()
+            
+            function getRootPath() {
+                var pathName = window.document.location.pathname;
+                var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+                return projectName;
+            }
+
+            var path = getRootPath();
+            function develop() {
+                if(editor.txt.text()==''){
+                    alert("内容不能为空！");
+                    return;
+                }
+                var text = {
+                    html_text:editor.txt.html(),
+                    content:editor.txt.text()
+                };
+                // console.log(JSON.stringify(text));
+                $("#loading").css({display:"block",zIndex:"10"});
+                $("#big").css("display","none");
+                $.ajax({
+                    url:path+"/notice/saveNotice",
+                    type:"post",
+                    dataType:"json",
+                    contentType:"application/json;charset=UTF-8",
+                    data:JSON.stringify(text),
+                    success:function (data) {
+                        if(data.result_status=="success"){
+                            $("#loading").css({display:"none",zIndex:"0"});
+                            alert("提交成功！");
+                            window.location.href="notices.html";
+                        }else{
+                            alert("提交失败，请稍后再试！");
+                            $("#loading").css({display:"none",zIndex:"0"});
+                            $("#big").css("display","block");
+                        }
+                    }
+                });
+            }
+        </script>
+    </div>
+</div>
+</body>
+</html>

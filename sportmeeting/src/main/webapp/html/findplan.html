@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../js/jquery-1.5.1.js"></script>
+    <style type="text/css">
+        body {
+            font-size: 20px;
+            /*background-color: #eee;*/
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #999;
+            -webkit-border-radius: 5px;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:vertical:hover {
+            background-color: #666;
+        }
+
+        ::-webkit-scrollbar-thumb:vertical:active {
+            background-color: #333;
+        }
+
+        ::-webkit-scrollbar-button {
+            display: none;
+        }
+
+        ::-webkit-scrollbar-track {
+            background-color: #f1f1f1;
+        }
+        #top{
+            margin-top: 15px;
+            border: 2px solid #98C9EE;
+            border-radius: 4px;
+            height: 90px;
+            width: 800px;
+        }
+        .ziti{
+            text-align: center;
+            font-size: 13px;
+            width: 150px;
+            height: 40px;
+            line-height: 40px;
+        }
+        #top span{
+            font-size: 13px;
+        }
+        .sang_Calender{
+            height: 30px;
+            width: 200px;
+            text-align: center;
+            border-radius: 8px;
+            outline: none;
+            border: 2px solid #DDDDDD;
+        }
+        .sbtn{
+            width: 50px;
+            height: 28px;
+            border-radius:4px;
+            border: 0px solid black;
+            outline: none;
+            cursor: pointer;
+            background-color: #e6e6e6;
+            font-size: 60%;
+            line-height: 28px;
+        }
+        .sbtn:hover{
+            background-color: #B0AFAF;
+        }
+        #mid{
+            margin-left: 100px;
+            margin-top: 5px;
+            width: 800px;
+            height: 360px;
+            border: 2px solid #98C9EE;;
+        }
+        #list{
+            width: 100%;
+            border-spacing: 0px;
+            border-collapse: collapse;
+        }
+        #list tr{
+            width: 100%;
+            border-bottom: 2px solid #98C9EE;;
+        }
+        #list td{
+            text-align: center;
+            font-size: 13px;
+            height: 30px;
+        }
+        #list tr td:first-child{
+            width: 40px;
+            border-right:2px solid #98C9EE;
+        }
+        #list tr td:last-child{
+            width: 60px;
+            border-left:2px solid #98C9EE;
+        }
+        #list tr td:nth-last-child(2){
+            width: 230px;
+            border-left:2px solid #98C9EE;
+        }
+        #list tr td:nth-last-child(3){
+            width: 230px;
+            border-left:2px solid #98C9EE;
+        }
+        #list thead tr td{
+            background: #D6EBFE;
+        }
+        #list tbody tr:last-child{
+            /*border-bottom: none;*/
+        }
+        a{
+            /*text-decoration: none;*/
+            font-size: 14px;
+            color: black;
+        }
+        #bottom{
+            margin-top: 10px;
+            margin-left: 400px;
+        }
+        #bottom span{
+            font-size: 14px;
+        }
+        #bottom input{
+            width: 42px;
+            font-size: 13px;
+            line-height: 23px;
+            cursor: pointer;
+            height: 23px;
+            text-align: center;
+        }
+        #fugai{
+            width: 1185px;
+            height: 560px;
+            background: darkgrey;
+            z-index: 5;
+            opacity: 5%;
+            position: absolute;
+            top: 10px;
+            display: none;
+        }
+        #tanchu {
+            width: 820px;
+            height: 520px;
+            background: white;
+            z-index: 6;
+            position: absolute;
+            top: 40px;
+            left: 130px;
+            border: 2px solid #DDDDDD;
+            border-radius: 8px;
+            display: none;
+        }
+        #contentarea{
+            margin: 0 auto;
+            /*border: 1px solid black;*/
+            width: 740px;
+            /*height: 460px;*/
+            overflow:auto;
+            margin-top: 100px;
+        }
+        #tanchuclose{
+            text-align: center;
+            margin: 0 auto;
+            margin-top: 80px;
+        }
+        #tanchuclose input{
+            width: 50px;
+            height: 28px;
+            border-radius:4px;
+            border: 0px solid black;
+            outline: none;
+            cursor: pointer;
+            background-color: #e6e6e6;
+            font-size: 60%;
+            line-height: 28px;
+        }
+        #tanchuclose input:hover{
+            background-color: #B0AFAF;
+        }
+        #tanchutable{
+            width: 100%;
+            border-spacing: 0px;
+            border-collapse: collapse;
+        }
+        #tanchutable td{
+            text-align: center;
+            font-size: 12px;
+            border: 2px solid #98C9EE;
+            height: 36px;
+        }
+        #tanchutable input{
+            width: 100%;
+            outline: none;
+            text-align: center;
+            height: 36px;
+            line-height: 36px;
+            border: none;
+            cursor: default;
+            padding: 0;
+        }
+        #tanchutable .td1{
+            background: #D6EBFE;
+            width: 80px;
+        }
+        .cp12{
+            width: 50%;
+            /*border-right:1.5px solid #98C9EE;*/
+        }
+        .cp12inp{
+            width: 100%;
+            border: none;
+            outline: none;
+            height: 25px
+        }
+        .cp1{
+            height: 30px;
+            display: flex;
+            flex-direction: row;
+            border: none;
+            /*border-bottom: 1px solid #98C9EE;*/
+        }
+        #cp input{
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div style="margin-left: 30px">
+    <div>
+        <strong style="font-size: 20px;color: #0e90d2; font-weight: 700">查询赛程</strong> /
+        <small style="font-size: 80%">Schedule</small>
+    </div>
+    <div style="margin-left: 100px">
+        <div id="top">
+            <div class="ziti">  发 布 时 间 区 间 ：</div>
+            <div style="display: flex;flex-direction: row;">
+                <div style="margin-left: 100px">
+                    <span>起 始 : </span>
+                    <input type="text" class="sang_Calender" placeholder="点击选择日期时间" id="starttime">
+                </div>
+                <div style="margin-left: 30px">
+                    <span>结 束 : </span>
+                    <input type="text" class="sang_Calender" placeholder="点击选择日期时间" id="endtime">
+                </div>
+                <div style="margin-left: 30px">
+                    <input type="button" value="查找" class="sbtn" onclick="searchplan()">
+                </div>
+                <div style="margin-left: 10px;">
+                    <input type="button" value="清空条件" class="sbtn" onclick="delcondition()" style="width: 60px;">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="mid">
+        <table id="list">
+            <thead>
+            <tr>
+                <td>序号</td>
+                <td>项目类型</td>
+                <td>项目名称</td>
+                <td>比赛场次</td>
+                <td>操作</td>
+            </tr>
+            </thead>
+            <tbody id="body"></tbody>
+        </table>
+    </div>
+    <div id="bottom">
+        <div>
+            <a href="javascript:void(0)" onclick="first()">首页</a>
+            <a href="javascript:void(0)" onclick="uppage()">上一页</a>
+            <a href="javascript:void(0)" onclick="downpage()">下一页</a>
+            <a href="javascript:void(0)" onclick="last()">尾页</a>
+            <span style="margin-left: 150px">
+                跳转至第
+                <input type="text" style="width: 20px;height: 23px" value="1" id="current">
+                页 / <a href="javascript:void(0)" id="totalnum"></a>
+                <input style="display: none" value="" id="totalPageNum">
+            </span>
+            <input type="button" value="跳转" onclick="jump()">
+        </div>
+    </div>
+</div>
+<div id="fugai">
+
+</div>
+<div id="tanchu">
+    <div id="contentarea">
+        <table id="tanchutable">
+            <tr>
+                <td class="td1">项目类型</td>
+                <td>
+                    <input type="text" readonly="readonly" id="itemtype">
+                </td>
+                <td class="td1">项目名称</td>
+                <td>
+                    <input type="text" readonly="readonly" id="itemname">
+                </td>
+                <td class="td1">比赛场次</td>
+                <td>
+                    <input type="text" readonly="readonly" id="matchindex">
+                </td>
+            </tr>
+            <tr>
+                <td class="td1">计划开始时间</td>
+                <td>
+                    <input type="text" readonly="readonly" id="jhtime">
+                </td>
+                <td class="td1">预计结束时间</td>
+                <td>
+                    <input type="text" readonly="readonly" id="jstime">
+                </td>
+                <td class="td1">比赛地点</td>
+                <td>
+                    <input type="text" readonly="readonly" id="address">
+                </td>
+            </tr>
+            <tr>
+                <td class="td1">裁判人数</td>
+                <td><input type="text" readonly="readonly" id="cpnum"></td>
+                <td class="td1">裁判人员名单</td>
+                <td colspan="3" style="height:150px;padding: 0px">
+                    <div style="height: 150px;border: none">
+                        <div style="height: 30px;border: none;border-bottom: 1.5px solid #98C9EE;display: flex;flex-direction: row;">
+                            <div style="width: 50%;border-right:1.5px solid #98C9EE;background: #D6EBFE;">
+                                <small style="line-height: 30px">裁判学号</small>
+                            </div>
+                            <div style="width: 50%;background:#D6EBFE ">
+                                <small style="line-height: 30px">裁判姓名</small>
+                            </div>
+                        </div>
+                        <div style="height: 120px;border: none;overflow: auto" id="cp"></div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="tanchuclose">
+        <input type="button" onclick="closearea()" value="关闭">
+    </div>
+</div>
+</body>
+<script src="../js/datetime.js"></script>
+<script type="text/javascript">
+    function delcondition() {
+        $(".sang_Calender").val("");
+        searchplan();
+    }
+    function searchplan() {
+        var searchplaninfo = {
+            starttime:$("#starttime").val(),
+            endtime:$("#endtime").val(),
+            currentPageIndex:"1"
+        };
+        var currentPageIndex = 1;
+        $.ajax({
+            url:path+"/plan/findPlanInfo",
+            type:"post",
+            dataType:"json",
+            contentType:"application/json;charset=UTF-8",
+            data:JSON.stringify(searchplaninfo),
+            success:function (data) {
+                if(data.length!=0){
+                    var str = "";
+                    for(var i=0;i<data.length;i++){
+                        str+="<tr>\n" +
+                            "                <td>"+((currentPageIndex-1)*10+i+1)+"</td>\n" +
+                            "                <td>"+data[i].type_name+"<input style='display: none' value='"+data[i].plan_id+"'>"+"</td>\n" +
+                            "                <td>"+data[i].item_name+"</td>\n" +
+                            "                <td>"+data[i].match_index+"</td>\n"+
+                            "                <td>\n" +
+                            "                    <input type=\"button\" value=\"查看\" class=\"sbtn\" onclick=\"look(this)\">\n" +
+                            "                </td>\n" +
+                            "            </tr>";
+                    }
+                    $("#body").html("");
+                    $(str).appendTo($("#body"));
+                    $("#current").val(currentPageIndex);
+                    var totalnum = data[0].totalPage;
+                    var totalPageNum = data[0].totalPageNum;
+                    $("#totalnum").html(totalnum);
+                    $("#totalPageNum").val(totalPageNum);
+                }else {
+                    alert("此条件下不存在数据！");
+                    window.location.href="findplan.html";
+                }
+            }
+        });
+    }
+    function closearea() {
+        $("#fugai").css("display","none");
+        $("#tanchu").css("display","none");
+    }
+    function look(e) {
+        var plan_id = $($(e).parents("tr").find("input")[0]).val();
+        var html_content = {
+            plan_id : plan_id
+        };
+        $.ajax({
+            url:path+"/plan/findPlanInfoDetail",
+            type:"post",
+            dataType:"json",
+            contentType:"application/json;charset=UTF-8",
+            data:JSON.stringify(html_content),
+            success:function (data) {
+                console.log(data);
+                $("#itemtype").val(data.type_name);
+                $("#itemname").val(data.item_name);
+                $("#matchindex").val(data.match_index);
+                $("#jhtime").val(data.start_time);
+                $("#jstime").val(data.end_time);
+                $("#address").val(data.match_address);
+                $("#cpnum").val(data.judgeInfoList.length);
+                var str = "";
+                for(var i=0;i<data.judgeInfoList.length;i++){
+                    str+="<div class=\"cp1\">"+
+                        "<div class=\"cp12\">"+
+                        "<input type=\"text\" readonly=\"readonly\" class=\"cp12inp\" value="+data.judgeInfoList[i].judge_number+">"+
+                        "</div>"+
+                        "<div style=\"width: 50%;\" class=\"cp13\">"+
+                        "<input type=\"text\" readonly=\"readonly\" class=\"cp12inp\" value="+data.judgeInfoList[i].judge_name+">"+
+                        "</div>"+
+                        "</div>";
+                }
+                $("#cp").empty();
+                $(str).appendTo($("#cp"));
+                $("#fugai").css("display","block");
+                $("#tanchu").css("display","block");
+            }
+        });
+    }
+    function jump() {
+        var currentPageIndex = $("#current").val();
+        if(currentPageIndex>=1&&currentPageIndex<=$("#totalnum").text()-0){
+            if($("#starttime").val()!=""||$("#endtime").val()!=""){
+                var searchnoticeinfo = {
+                    starttime:$("#starttime").val(),
+                    endtime:$("#endtime").val(),
+                    currentPageIndex:currentPageIndex
+                };
+                $.ajax({
+                    url:path+"/plan/findPlanInfo",
+                    type:"post",
+                    dataType:"json",
+                    contentType:"application/json;charset=UTF-8",
+                    data:JSON.stringify(searchnoticeinfo),
+                    success:function (data) {
+                        // console.log(data);
+                        var str = "";
+                        for(var i=0;i<data.length;i++){
+                            str+="<tr>\n" +
+                                "                <td>"+((currentPageIndex-1)*10+i+1)+"</td>\n" +
+                                "                <td>"+data[i].type_name+"<input style='display: none' value='"+data[i].plan_id+"'>"+"</td>\n" +
+                                "                <td>"+data[i].item_name+"</td>\n" +
+                                "                <td>"+data[i].match_index+"</td>\n"+
+                                "                <td>\n" +
+                                "                    <input type=\"button\" value=\"查看\" class=\"sbtn\" onclick=\"look(this)\">\n" +
+                                "                </td>\n" +
+                                "            </tr>";
+                        }
+                        $("#body").html("");
+                        $(str).appendTo($("#body"));
+                        $("#current").val(currentPageIndex);
+                    }
+                });
+            }else {
+                var info = {
+                    currentPageIndex:currentPageIndex
+                };
+                $.ajax({
+                    url:path+"/plan/findPlanInfo",
+                    type:"post",
+                    dataType:"json",
+                    contentType:"application/json;charset=UTF-8",
+                    data:JSON.stringify(info),
+                    success:function (data) {
+                        // console.log(data);
+                        var str = "";
+                        for(var i=0;i<data.length;i++){
+                            str+="<tr>\n" +
+                                "                <td>"+((currentPageIndex-1)*10+i+1)+"</td>\n" +
+                                "                <td>"+data[i].type_name+"<input style='display: none' value='"+data[i].plan_id+"'>"+"</td>\n" +
+                                "                <td>"+data[i].item_name+"</td>\n" +
+                                "                <td>"+data[i].match_index+"</td>\n"+
+                                "                <td>\n" +
+                                "                    <input type=\"button\" value=\"查看\" class=\"sbtn\" onclick=\"look(this)\">\n" +
+                                "                </td>\n" +
+                                "            </tr>";
+                        }
+                        $("#body").html("");
+                        $(str).appendTo($("#body"));
+                        $("#current").val(currentPageIndex);
+                    }
+                });
+            }
+        }else {
+            alert("请输入正确的页码！");
+            return;
+        }
+    }
+    function last() {
+        if($("#starttime").val()!=""||$("#endtime").val()!=""){
+            var currentPageIndex = $("#totalnum").text();
+            var searchnoticeinfo = {
+                starttime:$("#starttime").val(),
+                endtime:$("#endtime").val(),
+                currentPageIndex:currentPageIndex
+            };
+            $.ajax({
+                url:path+"/plan/findPlanInfo",
+                type:"post",
+                dataType:"json",
+                contentType:"application/json;charset=UTF-8",
+                data:JSON.stringify(searchnoticeinfo),
+                success:function (data) {
+                    // console.log(data);
+                    var str = "";
+                    for(var i=0;i<data.length;i++){
+                        str+="<tr>\n" +
+                            "                <td>"+((currentPageIndex-1)*10+i+1)+"</td>\n" +
+                            "                <td>"+data[i].type_name+"<input style='display: none' value='"+data[i].plan_id+"'>"+"</td>\n" +
+                            "                <td>"+data[i].item_name+"</td>\n" +
+                            "                <td>"+data[i].match_index+"</td>\n"+
+                            "                <td>\n" +
+                            "                    <input type=\"button\" value=\"查看\" class=\"sbtn\" onclick=\"look(this)\">\n" +
+                            "                </td>\n" +
+                            "            </tr>";
+                    }
+                    $("#body").html("");
+                    $(str).appendTo($("#body"));
+                    $("#current").val(currentPageIndex);
+                }
+            });
+        }else {
+            var currentPageIndex = $("#totalnum").text();
+            var info = {
+                currentPageIndex:currentPageIndex
+            };
+            $.ajax({
+                url:path+"/plan/findPlanInfo",
+                type:"post",
+                dataType:"json",
+                contentType:"application/json;charset=UTF-8",
+                data:JSON.stringify(info),
+                success:function (data) {
+                    // console.log(data);
+                    var str = "";
+                    for(var i=0;i<data.length;i++){
+                        str+="<tr>\n" +
+                            "                <td>"+((currentPageIndex-1)*10+i+1)+"</td>\n" +
+                            "                <td>"+data[i].type_name+"<input style='display: none' value='"+data[i].plan_id+"'>"+"</td>\n" +
+                            "                <td>"+data[i].item_name+"</td>\n" +
+                            "                <td>"+data[i].match_index+"</td>\n"+
+                            "                <td>\n" +
+                            "                    <input type=\"button\" value=\"查看\" class=\"sbtn\" onclick=\"look(this)\">\n" +
+                            "                </td>\n" +
+                            "            </tr>";
+                    }
+                    $("#body").html("");
+                    $(str).appendTo($("#body"));
+                    $("#current").val(currentPageIndex);
+                }
+            });
+        }
+    }
+    function first() {
+        if($("#starttime").val()!=""||$("#endtime").val()!=""){
+            var searchnoticeinfo = {
+                starttime:$("#starttime").val(),
+                endtime:$("#endtime").val(),
+                currentPageIndex:"1"
+            };
+            var currentPageIndex = 1;
+            $.ajax({
+                url:path+"/plan/findPlanInfo",
+                type:"post",
+                dataType:"json",
+                contentType:"application/json;charset=UTF-8",
+                data:JSON.stringify(searchnoticeinfo),
+                success:function (data) {
+                    // console.log(data);
+                    var str = "";
+                    for(var i=0;i<data.length;i++){
+                        str+="<tr>\n" +
+                            "                <td>"+((currentPageIndex-1)*10+i+1)+"</td>\n" +
+                            "                <td>"+data[i].type_name+"<input style='display: none' value='"+data[i].plan_id+"'>"+"</td>\n" +
+                            "                <td>"+data[i].item_name+"</td>\n" +
+                            "                <td>"+data[i].match_index+"</td>\n"+
+                            "                <td>\n" +
+                            "                    <input type=\"button\" value=\"查看\" class=\"sbtn\" onclick=\"look(this)\">\n" +
+                            "                </td>\n" +
+                            "            </tr>";
+                    }
+                    $("#body").html("");
+                    $(str).appendTo($("#body"));
+                    $("#current").val(currentPageIndex);
+                    var totalnum = data[0].totalPage;
+                    var totalPageNum = data[0].totalPageNum;
+                    $("#totalnum").html(totalnum);
+                    $("#totalPageNum").val(totalPageNum);
+                }
+            });
+        }else {
+            var info = {
+                currentPageIndex:"1"
+            };
+            var currentPageIndex = 1;
+            $.ajax({
+                url:path+"/plan/findPlanInfo",
+                type:"post",
+                dataType:"json",
+                contentType:"application/json;charset=UTF-8",
+                data:JSON.stringify(info),
+                success:function (data) {
+                    // console.log(data);
+                    var str = "";
+                    for(var i=0;i<data.length;i++){
+                        str+="<tr>\n" +
+                            "                <td>"+((currentPageIndex-1)*10+i+1)+"</td>\n" +
+                            "                <td>"+data[i].type_name+"<input style='display: none' value='"+data[i].plan_id+"'>"+"</td>\n" +
+                            "                <td>"+data[i].item_name+"</td>\n" +
+                            "                <td>"+data[i].match_index+"</td>\n"+
+                            "                <td>\n" +
+                            "                    <input type=\"button\" value=\"查看\" class=\"sbtn\" onclick=\"look(this)\">\n" +
+                            "                </td>\n" +
+                            "            </tr>";
+                    }
+                    $("#body").html("");
+                    $(str).appendTo($("#body"));
+                    $("#current").val(currentPageIndex);
+                    var totalnum = data[0].totalPage;
+                    var totalPageNum = data[0].totalPageNum;
+                    $("#totalnum").html(totalnum);
+                    $("#totalPageNum").val(totalPageNum);
+                }
+            });
+        }
+    }
+    function downpage() {
+        if($("#starttime").val()!=""||$("#endtime").val()!=""){
+            var tr = $("tr")[1];
+            var currentPageIndex;
+            var rownum = $(tr).find("td")[0].innerHTML;
+            // console.log(rownum);
+            // console.log($("#totalnum").text());
+            if(rownum>($("#totalnum").text()-1)*10){
+                currentPageIndex = $("#totalnum").text();
+                return;
+            }else {
+                currentPageIndex = Math.ceil(rownum/10)+1;
+            }
+            var searchnoticeinfo = {
+                starttime:$("#starttime").val(),
+                endtime:$("#endtime").val(),
+                currentPageIndex:currentPageIndex
+            };
+            $.ajax({
+                url:path+"/plan/findPlanInfo",
+                type:"post",
+                dataType:"json",
+                contentType:"application/json;charset=UTF-8",
+                data:JSON.stringify(searchnoticeinfo),
+                success:function (data) {
+                    // console.log(data);
+                    var str = "";
+                    for(var i=0;i<data.length;i++){
+                        str+="<tr>\n" +
+                            "                <td>"+((currentPageIndex-1)*10+i+1)+"</td>\n" +
+                            "                <td>"+data[i].type_name+"<input style='display: none' value='"+data[i].plan_id+"'>"+"</td>\n" +
+                            "                <td>"+data[i].item_name+"</td>\n" +
+                            "                <td>"+data[i].match_index+"</td>\n"+
+                            "                <td>\n" +
+                            "                    <input type=\"button\" value=\"查看\" class=\"sbtn\" onclick=\"look(this)\">\n" +
+                            "                </td>\n" +
+                            "            </tr>";
+                    }
+                    $("#body").html("");
+                    $(str).appendTo($("#body"));
+                    $("#current").val(currentPageIndex);
+                }
+            });
+        }else {
+            var tr = $("tr")[1];
+            var currentPageIndex;
+            var rownum = $(tr).find("td")[0].innerHTML;
+            // console.log(rownum);
+            // console.log($("#totalnum").text());
+            if(rownum>($("#totalnum").text()-1)*10){
+                currentPageIndex = $("#totalnum").text();
+                return;
+            }else {
+                currentPageIndex = Math.ceil(rownum/10)+1;
+            }
+            var info = {
+                currentPageIndex:currentPageIndex
+            };
+            $.ajax({
+                url:path+"/plan/findPlanInfo",
+                type:"post",
+                dataType:"json",
+                contentType:"application/json;charset=UTF-8",
+                data:JSON.stringify(info),
+                success:function (data) {
+                    // console.log(data);
+                    var str = "";
+                    for(var i=0;i<data.length;i++){
+                        str+="<tr>\n" +
+                            "                <td>"+((currentPageIndex-1)*10+i+1)+"</td>\n" +
+                            "                <td>"+data[i].type_name+"<input style='display: none' value='"+data[i].plan_id+"'>"+"</td>\n" +
+                            "                <td>"+data[i].item_name+"</td>\n" +
+                            "                <td>"+data[i].match_index+"</td>\n"+
+                            "                <td>\n" +
+                            "                    <input type=\"button\" value=\"查看\" class=\"sbtn\" onclick=\"look(this)\">\n" +
+                            "                </td>\n" +
+                            "            </tr>";
+                    }
+                    $("#body").html("");
+                    $(str).appendTo($("#body"));
+                    $("#current").val(currentPageIndex);
+                }
+            });
+        }
+    }
+    function uppage() {
+        if($("#starttime").val()!=""||$("#endtime").val()!=""){
+            var tr = $("tr")[$("tr").length-1];
+            var currentPageIndex;
+            var rownum = $(tr).find("td")[0].innerHTML;
+            if(rownum<=10){
+                currentPageIndex = 1;
+                return;
+            }else {
+                currentPageIndex = Math.ceil(rownum/10)-1;
+            }
+            var searchnoticeinfo = {
+                starttime:$("#starttime").val(),
+                endtime:$("#endtime").val(),
+                currentPageIndex:currentPageIndex
+            };
+            $.ajax({
+                url:path+"/plan/findPlanInfo",
+                type:"post",
+                dataType:"json",
+                contentType:"application/json;charset=UTF-8",
+                data:JSON.stringify(searchnoticeinfo),
+                success:function (data) {
+                    // console.log(data);
+                    var str = "";
+                    for(var i=0;i<data.length;i++){
+                        str+="<tr>\n" +
+                            "                <td>"+((currentPageIndex-1)*10+i+1)+"</td>\n" +
+                            "                <td>"+data[i].type_name+"<input style='display: none' value='"+data[i].plan_id+"'>"+"</td>\n" +
+                            "                <td>"+data[i].item_name+"</td>\n" +
+                            "                <td>"+data[i].match_index+"</td>\n"+
+                            "                <td>\n" +
+                            "                    <input type=\"button\" value=\"查看\" class=\"sbtn\" onclick=\"look(this)\">\n" +
+                            "                </td>\n" +
+                            "            </tr>";
+                    }
+                    $("#body").html("");
+                    $(str).appendTo($("#body"));
+                    $("#current").val(currentPageIndex);
+                }
+            });
+        }else {
+            var tr = $("tr")[$("tr").length-1];
+            var currentPageIndex;
+            var rownum = $(tr).find("td")[0].innerHTML;
+            if(rownum<=10){
+                currentPageIndex = 1;
+                return;
+            }else {
+                currentPageIndex = Math.ceil(rownum/10)-1;
+            }
+            var info = {
+                currentPageIndex:currentPageIndex
+            };
+            $.ajax({
+                url:path+"/plan/findPlanInfo",
+                type:"post",
+                dataType:"json",
+                contentType:"application/json;charset=UTF-8",
+                data:JSON.stringify(info),
+                success:function (data) {
+                    // console.log(data);
+                    var str = "";
+                    for(var i=0;i<data.length;i++){
+                        str+="<tr>\n" +
+                            "                <td>"+((currentPageIndex-1)*10+i+1)+"</td>\n" +
+                            "                <td>"+data[i].type_name+"<input style='display: none' value='"+data[i].plan_id+"'>"+"</td>\n" +
+                            "                <td>"+data[i].item_name+"</td>\n" +
+                            "                <td>"+data[i].match_index+"</td>\n"+
+                            "                <td>\n" +
+                            "                    <input type=\"button\" value=\"查看\" class=\"sbtn\" onclick=\"look(this)\">\n" +
+                            "                </td>\n" +
+                            "            </tr>";
+                    }
+                    $("#body").html("");
+                    $(str).appendTo($("#body"));
+                    $("#current").val(currentPageIndex);
+                }
+            });
+        }
+    }
+    function getRootPath() {
+        var pathName = window.document.location.pathname;
+        var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+        return projectName;
+    }
+
+    var path = getRootPath();
+
+    window.onload = function firstload() {
+        var info = {
+            currentPageIndex:"1"
+        };
+        var currentPageIndex = 1;
+        $.ajax({
+            url:path+"/plan/findPlanInfo",
+            type:"post",
+            dataType:"json",
+            contentType:"application/json;charset=UTF-8",
+            data:JSON.stringify(info),
+            success:function (data) {
+                // console.log(data);
+                var str = "";
+                for(var i=0;i<data.length;i++){
+                    str+="<tr>\n" +
+                        "                <td>"+((currentPageIndex-1)*10+i+1)+"</td>\n" +
+                        "                <td>"+data[i].type_name+"<input style='display: none' value='"+data[i].plan_id+"'>"+"</td>\n" +
+                        "                <td>"+data[i].item_name+"</td>\n" +
+                        "                <td>"+data[i].match_index+"</td>\n"+
+                        "                <td>\n" +
+                        "                    <input type=\"button\" value=\"查看\" class=\"sbtn\" onclick=\"look(this)\">\n" +
+                        "                </td>\n" +
+                        "            </tr>";
+                }
+                $(str).appendTo($("#body"));
+                var totalnum = data[0].totalPage;
+                var totalPageNum = data[0].totalPageNum;
+                $("#totalnum").html(totalnum);
+                $("#totalPageNum").val(totalPageNum);
+            }
+        });
+    }
+</script>
+</html>

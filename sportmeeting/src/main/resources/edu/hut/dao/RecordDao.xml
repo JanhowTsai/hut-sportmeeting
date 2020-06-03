@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.hut.dao.RecordDao">
+    <resultMap id="scoreinfo" type="edu.hut.domain.ScoreInfo">
+        <result property="type_id" column="type_id"></result>
+        <result property="item_id" column="item_id"></result>
+        <result property="player_number" column="player_number"></result>
+        <result property="player_name" column="player_name"></result>
+        <result property="this_score" column="score1"></result>
+        <result property="this_score" column="score2"></result>
+        <result property="this_score" column="score3"></result>
+        <result property="this_score" column="score4"></result>
+        <result property="this_score" column="score5"></result>
+    </resultMap>
+    <select id="searchPlayer" parameterType="edu.hut.domain.SearchInfo" resultType="edu.hut.domain.Register">
+        select a.player_name,a.player_number from register a where
+        a.type_id = #{searchInfo.type_id}
+        and a.item_id = #{searchInfo.item_id}
+        and a.match_index = #{searchInfo.match_index}
+    </select>
+    <select id="vetifyExist" resultType="java.util.HashMap">
+        SELECT * from record where item_id = #{iid} AND type_id = #{tid} AND player_number in
+        <foreach collection="stroeList" item="playernumber" separator="," open="(" close=")">
+          #{playernumber}
+        </foreach>
+    </select>
+    <insert id="saveScoreOfOne" parameterType="java.util.List">
+        insert into record (
+        type_id,
+        item_id,
+        player_number,
+        player_name,
+        score1
+        ) values
+        <foreach collection="list" item="scoreinfo" separator=",">
+            (
+            #{scoreinfo.type_id},
+            #{scoreinfo.item_id},
+            #{scoreinfo.player_number},
+            #{scoreinfo.player_name},
+            #{scoreinfo.this_score}
+            )
+        </foreach>
+    </insert>
+    <update id="saveScoreOfTwo" parameterType="java.util.List">
+        <foreach collection="list" item="scoreinfo" separator=";">
+            update record set score2 = #{scoreinfo.this_score} where type_id = #{scoreinfo.type_id} and
+            item_id = #{scoreinfo.item_id} and player_number = #{scoreinfo.player_number}
+        </foreach>
+    </update>
+    <select id="findPlayerScore" resultType="java.util.HashMap">
+        select * from record
+    </select>
+    <select id="searchPlayerScore" resultMap="scoreinfo" parameterType="edu.hut.domain.SearchInfo">
+        select a.player_number,a.player_name,a.type_id,a.item_id
+            <if test='searchInfo.match_index=="1"'>
+                ,a.score1
+            </if>
+            <if test='searchInfo.match_index=="2"'>
+                ,a.score2
+            </if>
+            <if test='searchInfo.match_index=="3"'>
+                ,a.score3
+            </if>
+            <if test='searchInfo.match_index=="4"'>
+                ,a.score4
+            </if>
+            <if test='searchInfo.match_index=="5"'>
+                ,a.score5
+            </if>
+        from record a where type_id = #{searchInfo.type_id} and item_id = #{searchInfo.item_id}
+    </select>
+</mapper>

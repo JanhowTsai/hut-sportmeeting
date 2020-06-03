@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.hut.dao.PlayerDao">
+    <insert id="savePlayerInfo" parameterType="edu.hut.domain.PlayerInfo">
+        insert into players
+        (
+            player_name,
+            player_sex,
+            player_xy,
+            player_zy,
+            player_class,
+            player_number,
+            player_idcard,
+            player_tel
+        )values
+        (
+          #{playerInfo.player_name},
+          #{playerInfo.player_sex},
+          #{playerInfo.player_xy},
+          #{playerInfo.player_zy},
+          #{playerInfo.player_class},
+          #{playerInfo.player_number},
+          #{playerInfo.player_idcard},
+          #{playerInfo.player_tel}
+        )
+    </insert>
+    <insert id="saveImage" parameterType="java.lang.String">
+        insert into player_pic (pic_address,player_number) values (#{pic_address},#{player_number})
+    </insert>
+    <select id="findItems" parameterType="java.lang.String" resultType="edu.hut.dto.ItemsDTO">
+        select a.player_number,b.item_name from register a,items b where a.player_number = #{player_number} and a.item_id = b.item_id
+    </select>
+    <select id="findPlayerListNum" resultType="java.lang.Integer" parameterType="edu.hut.domain.PageOfPlayerList">
+        select count(*) from players where 1=1
+        <if test="pageOfPlayerList.playerName!=null and pageOfPlayerList.playerNumber!=null">
+            and player_name = #{pageOfPlayerList.playerName} and player_number = #{pageOfPlayerList.playerNumber}
+        </if>
+        <if test="pageOfPlayerList.playerName==null and pageOfPlayerList.playerNumber!=null">
+            and player_number = #{pageOfPlayerList.playerNumber}
+        </if>
+        <if test="pageOfPlayerList.playerName!=null and pageOfPlayerList.playerNumber==null">
+            and player_name = #{pageOfPlayerList.playerName}
+        </if>
+    </select>
+    <select id="findPlayerList" resultType="java.util.HashMap" parameterType="edu.hut.domain.PageOfPlayerList">
+        select * from players where 1=1
+        <if test="pageOfPlayerList.playerName!=null and pageOfPlayerList.playerNumber!=null">
+            and player_name = #{pageOfPlayerList.playerName} and player_number = #{pageOfPlayerList.playerNumber}
+        </if>
+        <if test="pageOfPlayerList.playerName==null and pageOfPlayerList.playerNumber!=null">
+            and player_number = #{pageOfPlayerList.playerNumber}
+        </if>
+        <if test="pageOfPlayerList.playerName!=null and pageOfPlayerList.playerNumber==null">
+            and player_name = #{pageOfPlayerList.playerName}
+        </if>
+        limit #{pageOfPlayerList.startIndex},#{pageOfPlayerList.pageNum}
+    </select>
+    <resultMap id="playerDetail" type="java.util.HashMap">
+        <id property="pid" column="pid"></id>
+        <result property="player_name" column="player_name"></result>
+        <result property="player_number" column="player_number"></result>
+        <result property="player_sex" column="player_sex"></result>
+        <result property="player_xy" column="player_xy"></result>
+        <result property="player_zy" column="player_zy"></result>
+        <result property="player_class" column="player_class"></result>
+        <result property="player_idcard" column="player_idcard"></result>
+        <result property="player_tel" column="player_tel"></result>
+        <result property="pic_address" column="pic_address"></result>
+        <collection property="items" javaType="java.util.List" column="item_name" ofType="java.util.HashMap">
+            <result property="item_name" column="item_name"></result>
+        </collection>
+    </resultMap>
+    <select id="findPlayerInfoDetail" resultMap="playerDetail" parameterType="java.lang.Integer">
+        select
+        a.pid as pid,
+        a.player_name as player_name,
+        a.player_number as player_number,
+        a.player_sex as player_sex,
+        a.player_xy as player_xy,
+        a.player_zy as player_zy,
+        a.player_class as player_class,
+        a.player_idcard as player_idcard,
+        a.player_tel as player_tel,
+        b.pic_address as pic_address,
+        c.item_name as item_name
+        from players a,player_pic b,items c,register d where
+        a.pid = #{pid} and a.player_number = d.player_number and a.player_number = b.player_number and c.item_id = d.item_id
+    </select>
+</mapper>

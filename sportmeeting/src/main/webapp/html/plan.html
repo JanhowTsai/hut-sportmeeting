@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../js/jquery-1.5.1.js"></script>
+    <style type="text/css">
+        body {
+            font-size: 20px;
+            /*background-color: #eee;*/
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #999;
+            -webkit-border-radius: 5px;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:vertical:hover {
+            background-color: #666;
+        }
+
+        ::-webkit-scrollbar-thumb:vertical:active {
+            background-color: #333;
+        }
+
+        ::-webkit-scrollbar-button {
+            display: none;
+        }
+
+        ::-webkit-scrollbar-track {
+            background-color: #f1f1f1;
+        }
+
+        input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
+            color: darkgray;
+            font-size: 0.8rem;
+        }
+
+        span {
+            font-size: 15px;
+        }
+        .select {
+            display: inline-block;
+            height: 38px;
+            width: 150px;
+            position: relative;
+            vertical-align: middle;
+            padding: 0;
+            overflow: hidden;
+            background-color: #fff;
+            color: #555;
+            border: 0;
+            text-shadow: none;
+            border-radius: 4px;
+            transition: box-shadow 0.25s ease;
+            z-index: 2;
+        }
+
+        .select:hover {
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+        }
+
+        .select:before {
+            content: "";
+            position: absolute;
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+            border-top-color: #ccc;
+            top: 14px;
+            right: 10px;
+            cursor: pointer;
+            z-index: -2;
+        }
+        .select select {
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            background: transparent;
+            background-image: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        }
+
+        .select select:focus {
+            outline: none;
+        }
+
+        table {
+            border-collapse: collapse;
+            text-align: center;
+            border-spacing: 0px;
+        }
+
+        td {
+            border: 2px solid #98C9EE;
+            height: 36px;
+        }
+        .sang_Calender,.waitinput{
+            text-align: center;
+            outline: none;
+            border: none;
+            height: 36px;
+            font-size: 15px;
+        }
+        small {
+            font-size: 12px;
+            line-height: 36px;
+        }
+        .td1{
+            width: 150px;
+            background: #D6EBFE;
+        }
+        .btn div{
+            height: 30px;
+            width: 50px;
+            background-color: #e6e6e6;
+            border: solid 1px #d9d9d9;
+            font-size: 60%;
+            text-align: center;
+            line-height: 30px;
+            cursor: pointer;
+        }
+        .btn div:hover{
+            background-color: #B0AFAF;
+        }
+        .cp1{
+            height: 30px;
+            display: flex;
+            flex-direction: row;
+            border: none;
+            /*border-bottom: 1px solid #98C9EE;*/
+        }
+        .cp11{
+            width: 10%;
+            /*border-right:1.5px solid #98C9EE;*/
+        }
+        .cp12{
+            width: 45%;
+            /*border-right:1.5px solid #98C9EE;*/
+        }
+        .cp12inp{
+            width: 100%;
+            border: none;
+            outline: none;
+            height: 25px
+        }
+        #cp input{
+            text-align: center;
+        }
+        .mvBox {
+            height: 15px;
+            background: #F5FAFD url(../images/test2.jpg) no-repeat left center;
+            width: 471px;
+            position: relative;
+            padding: 0 30px;
+            margin: 0 auto;
+        }
+
+        .mvBtn {
+            position: absolute;
+            left: 50px;
+            top: 0;
+        }
+
+        .mvTxt {
+            height: 50px;
+            line-height: 50px;
+            width: 531px;
+            text-align: center;
+            font-size: 30px;
+            color: #29B6FF;
+            font-family: Arial;
+            margin: 0 auto;
+        }
+
+        #loading {
+            position: absolute;
+            display: none;
+            top: 200px;
+            left: 315px;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body>
+<div id="loading" style="width: 600px;">
+    <div class="mvTxt">Loading<span class="mvSq">.</span><span class="mvSq">.</span><span class="mvSq">.</span>
+    </div>
+    <div class="mvBox">
+        <img class="mvBtn" src="../images/test1.jpg">
+    </div>
+    <script type="text/javascript">
+        var delVal=50;
+        function autoMove(){
+            delVal++;
+            if(delVal>400){
+                delVal=50;
+            }
+            $(".mvBtn").css("left",delVal);
+        }
+        setInterval(autoMove,8);
+        var deNum=0;
+        function autoTsq(){
+            $(".mvSq").css("color","#F5FAFD");
+            setTimeout(function(){$(".mvSq").eq(0).css("color","#29B6FF")},0);
+            setTimeout(function(){$(".mvSq").eq(1).css("color","#29B6FF")},500);
+            setTimeout(function(){$(".mvSq").eq(2).css("color","#29B6FF")},1000);
+        }
+        setInterval(autoTsq,1500);
+    </script>
+</div>
+<div style="margin-left: 30px" id="infotable">
+    <div>
+        <strong style="font-size: 20px;color: #0e90d2; font-weight: 700">赛程编制与安排</strong> /
+        <small style="font-size: 80%">Plan</small>
+    </div>
+    <div style="display: flex; flex-direction: row; margin-top: 20px" class="btn">
+        <div onclick="commit()">提交</div>
+    </div>
+    <div style="margin-top: 35px">
+        <table>
+            <tr>
+                <td class="td1">
+                    <small>项目类型</small>
+                </td>
+                <td>
+                    <div class="select">
+                        <select onmouseover="loaditemstype(this)" class="itemstype">
+                            <option>请选择</option>
+                        </select>
+                    </div>
+                </td>
+                <td class="td1">
+                    <small>项目名称</small>
+                </td>
+                <td>
+                    <div class="select">
+                        <select onmouseover="loaditemstype(this)" class="items">
+                            <option>请选择</option>
+                        </select>
+                    </div>
+                </td>
+                <td class="td1">
+                    <small>比赛场次</small>
+                </td>
+                <td>
+                    <div class="select">
+                        <select class="matchnum">
+                            <option>请选择</option>
+                        </select>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="td1">
+                    <small>计划开始时间</small>
+                </td>
+                <td>
+                    <input type="text" class="sang_Calender" placeholder="点击选择日期时间" id="starttime">
+                </td>
+                <td class="td1">
+                    <small>预计结束时间</small>
+                </td>
+                <td>
+                    <input type="text" class="sang_Calender" placeholder="点击选择日期时间" id="endtime">
+                </td>
+                <td class="td1">
+                    <small>比赛地点</small>
+                </td>
+                <td>
+                    <input type="text" placeholder="请输入比赛地点" class="waitinput" id="matchaddress">
+                </td>
+                <script src="../js/datetime.js"></script>
+            </tr>
+            <tr>
+                <td style="height: 150px;background: #D6EBFE;">
+                    <small>可用裁判人数</small>
+                </td>
+                <td style="height: 150px;">
+                    <input type="text" readonly="readonly" style="border: none;outline: none;
+                    cursor: pointer;width: 100%;height: 100%;text-align: center" id="judgement_num">
+                </td>
+                <td style="height: 150px;background: #D6EBFE;">
+                    <small>可用裁判名单</small>
+                </td>
+                <td colspan="3" style="height:150px;padding: 0px">
+                    <div style="height: 150px;border: none">
+                        <div style="height: 30px;border: none;border-bottom: 1.5px solid #98C9EE;display: flex;flex-direction: row;">
+                            <div style="width: 10%;border-right:1.5px solid #98C9EE;background: #D6EBFE;">
+                            </div>
+                            <div style="width: 45%;border-right:1.5px solid #98C9EE;background: #D6EBFE;">
+                                <small style="line-height: 30px">裁判学号</small>
+                            </div>
+                            <div style="width: 45%;background:#D6EBFE ">
+                                <small style="line-height: 30px">裁判姓名</small>
+                            </div>
+                        </div>
+                        <div style="height: 120px;border: none;overflow: auto" id="cp">
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<script type="text/javascript">
+    function loaditemstype(e) {
+        if ($(e).children("option").length == 1 && $(e).find("option:selected").text() == "请选择") {
+            if ($(e).attr("class") == "itemstype") {
+                $(str2).appendTo($(e));
+            } else if ($(e).attr("class") == "items") {
+                $(str3).appendTo($(e));
+            }
+        }
+        if ($(e).attr("class") == "itemstype") {
+            $(e).unbind("change").change(function () {
+                var str4 = "<option>请选择</option>";
+                if ($(".itemstype").find("option:selected").text() != "请选择") {
+                    var z = $(".itemstype").find("option:selected").val();
+                    if ($(".items").find("option:selected").text() != '请选择') {
+                        var x = $(".items").find("option:selected").val();
+                        if (parseInt(arr2[x - 1].type_id) != z) {
+                            // $(this).find(".items").find("option:selected").text("请选择");
+                            $(".items").empty();
+                            for (var i = 0; i < arr2.length; i++) {
+                                if (arr2[i].type_id == z) {
+                                    str4 += "<option value=" + arr2[i].item_id + ">" + arr2[i].item_name + "</option>"
+                                }
+                            }
+                            $(str4).appendTo($(".items"));
+                        }
+                    } else {
+                        $(".items").empty();
+                        for (var i = 0; i < arr2.length; i++) {
+                            if (arr2[i].type_id == z) {
+                                str4 += "<option value=" + arr2[i].item_id + ">" + arr2[i].item_name + "</option>"
+                            }
+                        }
+                        $(str4).appendTo($(".items"));
+                    }
+                } else {
+                    for (var i = 0; i < arr2.length; i++) {
+                        str4 += "<option value=" + arr2[i].item_id + ">" + arr2[i].item_name + "</option>";
+                    }
+                    $(".items").empty();
+                    $(str4).appendTo($(".items"));
+                }
+            });
+        }
+        if ($(e).attr("class") == "items") {
+            $(e).unbind("change").change(function () {
+                var str6 = $(e).html();
+                var str7 = $(".itemstype").html();
+                // console.log(str6[1].toString());
+                var str5 = "";
+                var str8 = "";
+                var sum = 0;
+                if ($(e).find("option:selected").text() != "请选择") {
+                    var y = $(e).find("option:selected").val();//item_id
+                    // console.log($($(".items")[0]).find("option:selected").val());
+                    for (var i = 0; i < $(".items").length; i++) {
+                        if ($($(".items")[i]).find("option:selected").val() == y) {
+                            sum++;
+                            if (sum == 2) {
+                                alert("已存在，不可重复添加！！！");
+                                $(e).empty();
+                                $(".itemstype").empty();
+                                $(str6).appendTo($(e));
+                                $(str7).appendTo($(".itemstype"));
+                                return false;
+                            }
+                        }
+                    }
+                    str5 += "<option>请选择</option>";
+                    for (var i = 0; i < arr1.length; i++) {
+                        if (arr1[i].type_id == arr2[y - 1].type_id) {
+                            str5 += "<option selected = \"selected\" value=" + arr1[i].type_id + ">" + arr1[i].type_name + "</option>";
+                        } else {
+                            str5 += "<option value=" + arr1[i].type_id + ">" + arr1[i].type_name + "</option>";
+                        }
+                    }
+                    $(".itemstype").empty();
+                    $(str5).appendTo($(".itemstype"));
+                    $.ajax({
+                        url:path+"/judge/findMatchNum",
+                        type:"post",
+                        dataType:"json",
+                        data: JSON.stringify({item_id:$(".items").find("option:selected").val()}),
+                        contentType:"application/json;charset=UTF-8",
+                        success:function (data) {
+                            var matchstr = "<option>请选择</option>";
+                            var array = new Array(data.num);
+                            for(var i=0;i<array.length;i++){
+                                array[i]=i+1;
+                                matchstr+="<option value="+array[i]+">"+array[i]+"</option>"
+                            }
+                            $(".matchnum").empty();
+                            $(matchstr).appendTo($(".matchnum"));
+                        }
+                    });
+                    $.ajax({
+                        url:path+"/judge/findJudgement",
+                        type:"post",
+                        dataType:"json",
+                        data: JSON.stringify({item_id:$(".items").find("option:selected").val()}),
+                        contentType:"application/json;charset=UTF-8",
+                        success:function (data) {
+                            var judgestr = "";
+                            // console.log(data);
+                            var judgement_num = data.length;
+                            $("#judgement_num").val(judgement_num);
+                            for(var i=0;i<judgement_num;i++){
+                                judgestr+="<div class=\"cp1\">"+
+                                    "<div class=\"cp11\">"+
+                                    "<input type=\"checkbox\" class=\"cpcheckbox\" name=\"judger\" value="+data[i].jid+">"+
+                                    "</div>"+
+                                    "<div class=\"cp12\">"+
+                                    "<input type=\"text\" readonly=\"readonly\" class=\"cp12inp\" value="+data[i].judge_number+">"+
+                                    "</div>"+
+                                    "<div style=\"width: 45%;\" class=\"cp13\">"+
+                                    "<input type=\"text\" readonly=\"readonly\" class=\"cp12inp\" value="+data[i].judge_name+">"+
+                                    "</div>"+
+                                    "</div>";
+                            }
+                            $("#cp").empty();
+                            $(judgestr).appendTo($("#cp"));
+                        }
+                    });
+                } else {
+                    str5 += "<option>请选择</option>";
+                    for (var i = 0; i < arr1.length; i++) {
+                        str5 += "<option value=" + arr1[i].type_id + ">" + arr1[i].type_name + "</option>";
+                    }
+                    $(".itemstype").empty();
+                    $(str5).appendTo($(".itemstype"));
+                    str8 += "<option>请选择</option>";
+                    for (var i = 0; i < arr2.length; i++) {
+                        str8 += "<option value=" + arr2[i].item_id + ">" + arr2[i].item_name + "</option>";
+                    }
+                    $(".items").empty();
+                    $(str8).appendTo($(".items"));
+                    $("#judgement_num").val("");
+                    $(".matchnum").empty();
+                    $("<option>请选择</option>").appendTo($(".matchnum"));
+                    $("#cp").empty();
+                }
+            });
+        }
+    }
+
+    var arr1 = new Array();
+    var arr2 = new Array();
+    var arr3 = new Array();
+    var str2 = '';
+    var str3 = '';
+
+    function getRootPath() {
+        var pathName = window.document.location.pathname;
+        var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+        return projectName;
+    }
+
+    var path = getRootPath();
+
+    window.onload = function () {
+        var path = getRootPath();
+        // alert(path);
+        $.ajax(
+            {
+                url: path + "/items/findItemsType",
+                type: "post",
+                dataType: "json",
+                success: function (data) {
+                    // alert(data[0].type_id);
+                    for (var i = 0; i < data.length; i++) {
+                        arr1[i] = data[i];
+                        str2 += "<option value=" + arr1[i].type_id + ">" + arr1[i].type_name + "</option>";
+                    }
+                }
+            }
+        );
+        $.ajax(
+            {
+                url: path + "/items/findItems",
+                type: "post",
+                dataType: "json",
+                success: function (data) {
+                    // alert(data.length);
+                    for (var i = 0; i < data.length; i++) {
+                        arr2[i] = data[i];
+                        str3 += "<option value=" + arr2[i].item_id + ">" + arr2[i].item_name + "</option>";
+                    }
+                }
+            }
+        );
+    }
+
+    function commit() {
+        // console.log($("#starttime").val());
+        var array = $("select").find("option:selected");
+        for(var i=0;i<array.length;i++){
+            if($(array[i]).val()=="请选择"){
+                alert("存在未选择项，请选择后提交！");
+                return;
+            }
+        }
+        if($(".sang_Calender").val()==""||$(".waitinput").val()==""){
+            alert("存在未填写项，请填写后提交！");
+            return;
+        }
+        var judgearray = new Array();
+        if($("#judgement_num").val()!=0){
+            var checknum = 0;
+            for(var i=0;i<$(".cpcheckbox").length;i++){
+                if($($(".cpcheckbox")[i]).is(":checked")==true){
+                    checknum++;
+                    judgearray.push($($(".cpcheckbox")[i]).val());
+                }
+            }
+            if(checknum<1){
+                alert("请至少选择一个裁判！");
+                return;
+            }
+        }
+        var stime = $("#starttime").val();
+        var  etime = $("#endtime").val();
+        var start = new Date(stime).getTime();
+        var end = new Date(etime).getTime();
+        if(start>end){
+            alert("开始时间不可晚于结束时间！");
+            return;
+        }
+        var planinfo = {
+            type_id:$(".itemstype").val(),
+            item_id:$(".items").val(),
+            match_index:$(".matchnum").val(),
+            start_time:$("#starttime").val(),
+            end_time:$("#endtime").val(),
+            match_address:$("#matchaddress").val(),
+            judge_list:judgearray
+        };
+        $("#loading").css({display:"block",zIndex:"10"});
+        $("#infotable").css("display","none");
+        $.ajax({
+            url:path+"/plan/savePlanInfo",
+            type:"post",
+            dataType:"json",
+            contentType:"application/json;charset=UTF-8",
+            data:JSON.stringify(planinfo),
+            success:function (data) {
+                if(data.result_status=="success"){
+                    $("#loading").css({display:"none",zIndex:"0"});
+                    alert("提交成功！");
+                    window.location.href = "plan.html";
+                }else{
+                    alert("提交失败，请重新尝试！");
+                    $("#loading").css({display:"none",zIndex:"0"});
+                    $("#infotable").css("display","block");
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

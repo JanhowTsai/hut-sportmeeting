@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.hut.dao.NoticeDao">
+    <insert id="saveNotice" parameterType="edu.hut.domain.Notice">
+        insert into notice (html_text,notice_time,content) values (#{notice.html_text},#{notice.notice_time},#{notice.content})
+    </insert>
+    <select id="findNoticeListNum" resultType="java.lang.Integer">
+        select count(*) from notice
+    </select>
+    <select id="findNoticeList" resultType="edu.hut.domain.Notice" parameterType="edu.hut.domain.PageOfNoticeList">
+        select * from notice limit #{pageOfNoticeList.startIndex},#{pageOfNoticeList.pageNum}
+    </select>
+    <select id="findNoticeHtmlContent" resultType="java.util.HashMap" parameterType="java.lang.Integer">
+        select a.html_text from notice a where a.nid = #{nid}
+    </select>
+    <select id="findNoticeListNum2" resultType="java.lang.Integer" parameterType="edu.hut.domain.PageOfNoticeList">
+        select count(*) from notice where 1=1 and
+        <if test="pageOfNoticeList.startTime!=null and pageOfNoticeList.endTime==null">
+            notice_time &gt;= #{pageOfNoticeList.startTime}
+        </if>
+        <if test="pageOfNoticeList.startTime==null and pageOfNoticeList.endTime!=null">
+            notice_time &lt;= #{pageOfNoticeList.endTime}
+        </if>
+        <if test="pageOfNoticeList.startTime!=null and pageOfNoticeList.endTime!=null">
+            notice_time between #{pageOfNoticeList.startTime} and #{pageOfNoticeList.endTime}
+        </if>
+    </select>
+    <select id="findNoticeListNumByTime" resultType="java.util.HashMap" parameterType="edu.hut.domain.PageOfNoticeList">
+        select * from notice where 1=1 and
+        <if test="pageOfNoticeList.startTime!=null and pageOfNoticeList.endTime==null">
+            notice_time &gt;= #{pageOfNoticeList.startTime}
+        </if>
+        <if test="pageOfNoticeList.startTime==null and pageOfNoticeList.endTime!=null">
+            notice_time &lt;= #{pageOfNoticeList.endTime}
+        </if>
+        <if test="pageOfNoticeList.startTime!=null and pageOfNoticeList.endTime!=null">
+            notice_time between #{pageOfNoticeList.startTime} and #{pageOfNoticeList.endTime}
+        </if>
+        limit #{pageOfNoticeList.startIndex},#{pageOfNoticeList.pageNum}
+    </select>
+</mapper>

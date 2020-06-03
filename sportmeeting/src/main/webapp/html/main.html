@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="../js/jquery-1.5.1.js"></script>
+    <style type="text/css">
+        #out{
+            background: lightcyan;
+            height: 26px;
+            line-height: 26px;
+            width: 1503px;
+            margin: 0 auto;
+        }
+        #username{
+            outline: none;
+            text-align: center;
+            border: none;
+            font-size: 15px;
+            width: 80px;
+            padding: 0px;
+            background: lightcyan;
+        }
+        #out a{
+            font-size: 13px;
+            color: black;
+        }
+        #in{
+            margin-left: 1340px;
+        }
+    </style>
+</head>
+<body style="margin: 0px">
+    <div id="out">
+        <div id="in">
+            <span style="font-size: 13px">用户：</span>
+            <input type="text" readonly="readonly" id="username">
+            <a href="javascript:void(0)" onclick="exit()">退出</a>
+        </div>
+    </div>
+    <iframe src="./top.html" frameborder="0" width="100%" scrolling="no" style="height: 130px"></iframe>
+    <div style="display: flex; flex-direction: row; width: 100%;">
+        <iframe src="./left.html" frameborder="0" name="left" scrolling="no" width="280px" height="625px"></iframe>
+        <iframe src="./right.html" frameborder="0" name="right" width="1230px" height="618px"></iframe>
+    </div>
+</body>
+<script type="text/javascript">
+    function getRootPath() {
+        var pathName = window.document.location.pathname;
+        var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+        return projectName;
+    }
+
+    var path = getRootPath();
+
+    window.onload = function () {
+        $.ajax({
+            url:path+"/user/getUsername",
+            type:"post",
+            dataType:"json",
+            contentType:"application/json;charset=UTF-8",
+            success:function (data) {
+                $("#username").val(data.username);
+            }
+        });
+    }
+
+    function exit() {
+        $.ajax({
+            url:path+"/user/exit",
+            type:"post",
+            dataType:"json",
+            contentType:"application/json;charset=UTF-8",
+            success:function (data) {
+                if(data.isdel=="yes"){
+                    alert("退出成功！");
+                    window.location.href = "login.html";
+                }
+            }
+        });
+    }
+</script>
+</html>

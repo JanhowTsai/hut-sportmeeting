@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.hut.dao.ItemsDao">
+    <select id="findItemsType" resultType="edu.hut.domain.ItemsType">
+        select * from items_type
+    </select>
+    <select id="findItems" resultType="edu.hut.domain.Items">
+        select * from items
+    </select>
+
+    <select id="findMatchItemsType" resultType="edu.hut.domain.ItemsType">
+        select distinct a.type_id as type_id,a.type_name as type_name from items_type a,match_items b where a.type_id = b.type_id
+    </select>
+    <select id="findMatchItems" resultType="edu.hut.domain.Items">
+        select a.item_id as item_id,a.item_name as item_name,a.type_id as type_id from items a,match_items b where a.item_id = b.item_id
+    </select>
+
+    <insert id="saveItems" parameterType="java.util.List">
+        insert into match_items
+        (type_id,
+        item_id,
+        match_num,
+        people_num)
+        values
+        <foreach collection="list" item="matchitem" separator=",">
+            (#{matchitem.type_id},
+            #{matchitem.item_id},
+            #{matchitem.match_num},
+            #{matchitem.people_num}
+            )
+        </foreach>
+    </insert>
+    <insert id="registerItems" parameterType="java.util.List">
+        insert into register
+        (type_id,
+        item_id,
+        player_name,
+        player_number,
+        player_class,
+        match_index
+        )
+        values
+        <foreach collection="list" item="registeritem" separator=",">
+            (#{registeritem.type_id},
+            #{registeritem.item_id},
+            #{registeritem.player_name},
+            #{registeritem.player_number},
+            #{registeritem.player_class},
+            #{registeritem.match_index}
+            )
+        </foreach>
+    </insert>
+    <select id="findItemsList" resultType="edu.hut.domain.MatchItems_info">
+            SELECT
+                a.mid,
+                a.match_num,
+                a.people_num,
+                b.type_name,
+                c.item_name
+            FROM
+                match_items a,
+                items_type b,
+                items c
+            WHERE
+                a.type_id = b.type_id
+                AND a.item_id = c.item_id;
+    </select>
+</mapper>

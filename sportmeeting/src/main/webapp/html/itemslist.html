@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../js/jquery-1.5.1.js"></script>
+    <style type="text/css">
+        body {
+            font-size: 20px;
+            /*background-color: #eee;*/
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-thumb{
+            background-color: #999;
+            -webkit-border-radius: 5px;
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:vertical:hover{
+            background-color: #666;
+        }
+        ::-webkit-scrollbar-thumb:vertical:active{
+            background-color: #333;
+        }
+        ::-webkit-scrollbar-button{
+            display: none;
+        }
+        ::-webkit-scrollbar-track{
+            background-color: #f1f1f1;
+        }
+
+        span {
+            font-size: 15px;
+        }
+
+        table td {
+            border-bottom: solid 1px #DDDDDD;
+        }
+
+        tbody tr {
+            height: 40px;
+            background: #D3DFED;
+        }
+
+        td div input {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        th {
+            height: 40px;
+            border-bottom: solid 1px #DDDDDD;
+            text-align: center;
+        }
+
+        input {
+            border-top: none;
+            border-bottom: none;
+            border-right: solid 1px #DDDDDD;
+            border-left: solid 1px #DDDDDD;
+            height: 36px;
+            width: 198px;
+            outline: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .mvBox{
+            height:15px;
+            background:#F5FAFD url(../images/test2.jpg) no-repeat left center;
+            width:471px;
+            position:relative;
+            padding:0 30px;
+            margin:0 auto;
+        }
+        .mvBtn{
+            position:absolute;
+            left:50px;
+            top:0;
+        }
+        .mvTxt{
+            height:50px;
+            line-height:50px;
+            width:531px;
+            text-align:center;
+            font-size:30px;
+            color:#29B6FF;
+            font-family:Arial;
+            margin:0 auto;
+        }
+        #loading{
+            position: absolute;
+            display: none;
+            top: 200px;
+            left: 315px;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading" style="width: 600px;">
+        <div class="mvTxt">Loading<span class="mvSq">.</span><span class="mvSq">.</span><span class="mvSq">.</span>
+        </div>
+        <div class="mvBox">
+            <img class="mvBtn" src="../images/test1.jpg">
+        </div>
+        <script type="text/javascript">
+            var delVal=50;
+            function autoMove(){
+                delVal++;
+                if(delVal>400){
+                    delVal=50;
+                }
+                $(".mvBtn").css("left",delVal);
+            }
+            setInterval(autoMove,8);
+            var deNum=0;
+            function autoTsq(){
+                $(".mvSq").css("color","#F5FAFD");
+                setTimeout(function(){$(".mvSq").eq(0).css("color","#29B6FF")},0);
+                setTimeout(function(){$(".mvSq").eq(1).css("color","#29B6FF")},500);
+                setTimeout(function(){$(".mvSq").eq(2).css("color","#29B6FF")},1000);
+            }
+            setInterval(autoTsq,1500);
+        </script>
+    </div>
+    <div id="matchtable">
+        <div>
+            <strong style="font-size: 20px;color: #0e90d2; font-weight: 700">项目列表</strong> /
+            <small style="font-size: 80%">ItemsList</small>
+        </div>
+        <table style="margin-top: 10px;width: 100%; border-spacing: 0px" id="table">
+            <thead style="font-size: 16px;text-align: left">
+            <tr>
+                <th>项目类型</th>
+                <th>项目名称</th>
+                <th>比赛轮数</th>
+                <th>计划人数</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <script>
+        function getRootPath(){
+            var pathName=window.document.location.pathname;
+            var projectName=pathName.substring(0,pathName.substr(1).indexOf('/')+1);
+            return projectName;
+        }
+        window.onload=function () {
+            $("#loading").css({display:"block",zIndex:"10"});
+            var path = getRootPath();
+            $.ajax({
+                url:path+"/items/findItemsList",
+                type:"post",
+                dataType:"json",
+                success:function (data) {
+                    $("#loading").css({display:"none",zIndex:"0"});
+                    if(data!=null){
+                        var size = data.length;
+                        var str = "";
+                        for(var i=0;i<size;i++){
+                            str+="<tr>"+
+                                "<td><div><input type=\"text\" class=\"itemstype\" readonly=\"readonly\" value="+data[i].type_name+"></div></td>"+
+                                "<td><div><input type=\"text\" class=\"items\" readonly=\"readonly\" value="+data[i].item_name+"></div></td>"+
+                                "<td><div><input type=\"text\" class=\"matchnum\" readonly=\"readonly\" value="+data[i].match_num+"></div></td>"+
+                                "<td><div><input type=\"text\" class=\"peoplenum\" readonly=\"readonly\" value="+data[i].people_num+"></div></td>"+
+                                "</tr>"
+                        }
+                        $(str).appendTo($("#table"));
+                    }else {
+                        alert("找不到数据！");
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

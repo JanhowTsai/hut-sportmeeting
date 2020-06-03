@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../js/jquery-1.5.1.js"></script>
+    <style type="text/css">
+        body {
+            font-size: 20px;
+            /*background-color: #eee;*/
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #999;
+            -webkit-border-radius: 5px;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:vertical:hover {
+            background-color: #666;
+        }
+
+        ::-webkit-scrollbar-thumb:vertical:active {
+            background-color: #333;
+        }
+
+        ::-webkit-scrollbar-button {
+            display: none;
+        }
+
+        ::-webkit-scrollbar-track {
+            background-color: #f1f1f1;
+        }
+
+        input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
+            color: darkgray;
+            font-size: 0.8rem;
+        }
+
+        span {
+            font-size: 15px;
+        }
+
+        table {
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        td {
+            border: 2px solid #98C9EE;
+            height: 36px;
+        }
+
+        .td1 {
+            width: 12.6%;
+            background: #D6EBFE;
+        }
+
+        .td1 small {
+            font-size: 12px;
+            line-height: 36px;
+        }
+
+        input {
+            border: none;
+            outline: none;
+            width: 80%;
+            text-align: center;
+            font-size: 15px;
+            line-height: 36px;
+        }
+
+        #tb1 {
+            position: absolute;
+            top: 100px;
+        }
+
+        .btn button {
+            height: 30px;
+            width: 50px;
+            background-color: #e6e6e6;
+            border: solid 1px #d9d9d9;
+            font-size: 60%;
+            text-align: center;
+            /*line-height: 30px;*/
+            cursor: pointer;
+        }
+
+        .btn button:hover {
+            background-color: #B0AFAF;
+        }
+
+        .select {
+            display: inline-block;
+            height: 32px;
+            width: 180px;
+            position: relative;
+            vertical-align: middle;
+            padding: 0;
+            overflow: hidden;
+            background-color: #fff;
+            color: #555;
+            border: 0;
+            text-shadow: none;
+            border-radius: 4px;
+            transition: box-shadow 0.25s ease;
+            z-index: 2;
+            margin-right: 0;
+        }
+
+        .select:hover {
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+        }
+
+        .select:before {
+            content: "";
+            position: absolute;
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+            border-top-color: #ccc;
+            top: 14px;
+            right: 10px;
+            cursor: pointer;
+            z-index: -2;
+        }
+
+        .select select {
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            background: transparent;
+            background-image: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        }
+
+        .select select:focus {
+            outline: none;
+        }
+
+        .items {
+            width: 100%;
+        }
+
+        .mvBox {
+            height: 15px;
+            background: #F5FAFD url(../images/test2.jpg) no-repeat left center;
+            width: 471px;
+            position: relative;
+            padding: 0 30px;
+            margin: 0 auto;
+        }
+
+        .mvBtn {
+            position: absolute;
+            left: 50px;
+            top: 0;
+        }
+
+        .mvTxt {
+            height: 50px;
+            line-height: 50px;
+            width: 531px;
+            text-align: center;
+            font-size: 30px;
+            color: #29B6FF;
+            font-family: Arial;
+            margin: 0 auto;
+        }
+
+        #loading {
+            position: absolute;
+            display: none;
+            top: 200px;
+            left: 315px;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body>
+<div id="loading" style="width: 600px;">
+    <div class="mvTxt">Loading<span class="mvSq">.</span><span class="mvSq">.</span><span class="mvSq">.</span>
+    </div>
+    <div class="mvBox">
+        <img class="mvBtn" src="../images/test1.jpg">
+    </div>
+    <script type="text/javascript">
+        var delVal=50;
+        function autoMove(){
+            delVal++;
+            if(delVal>400){
+                delVal=50;
+            }
+            $(".mvBtn").css("left",delVal);
+        }
+        setInterval(autoMove,8);
+        var deNum=0;
+        function autoTsq(){
+            $(".mvSq").css("color","#F5FAFD");
+            setTimeout(function(){$(".mvSq").eq(0).css("color","#29B6FF")},0);
+            setTimeout(function(){$(".mvSq").eq(1).css("color","#29B6FF")},500);
+            setTimeout(function(){$(".mvSq").eq(2).css("color","#29B6FF")},1000);
+        }
+        setInterval(autoTsq,1500);
+    </script>
+</div>
+<div id="infotable" style="margin-left: 30px">
+    <div>
+        <strong style="font-size: 20px;color: #0e90d2; font-weight: 700">裁判信息录入</strong> /
+        <small style="font-size: 80%">JudgeInfo</small>
+    </div>
+    <div style="display: flex; flex-direction: row; margin-top: 20px" class="btn">
+        <form enctype="multipart/form-data">
+            <input type="file" id="inputFile" style="display: none" onchange="uploadpic(this)" name="upload">
+            <button type="button" onclick="commit()">提交</button>
+        </form>
+    </div>
+    <div id="tb1">
+        <form>
+            <table style="margin-top: 10px;width:1140px; border-spacing: 0px;" id="table">
+                <tbody>
+                <tr>
+                    <td rowspan="4" width="10.5%" style="font-size: 0;padding: 0;">
+                        <label for="inputFile" style="font-size: 0px">
+                            <img src="../images/upload.png" width="115px" height="160px" style="cursor: pointer"
+                                 id="pic">
+                        </label>
+                    </td>
+                    <td class="td1">
+                        <small>姓名</small>
+                    </td>
+                    <td>
+                        <input type="text" placeholder="请输入姓名" id="judgename" class="waitinput" onfocus="rexp(this)">
+                    </td>
+                    <td class="td1">
+                        <small>性别</small>
+                    </td>
+                    <td>
+                        <input type="text" placeholder="请输入性别 (男/女)" id="judgesex" class="waitinput"
+                               onfocus="rexp(this)">
+                    </td>
+                    <td rowspan="2" width="12.6%" style="background: #D6EBFE;">
+                        <small style="font-size:12px">负责项目类型</small>
+                    </td>
+                    <td rowspan="2">
+                        <div class="select">
+                            <select onmouseover="loaditemstype(this)" class="itemstype">
+                                <option>请选择</option>
+                            </select>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1">
+                        <small>学院</small>
+                    </td>
+                    <td>
+                        <input type="text" placeholder="请输入学院" id="judgexy" class="waitinput" onfocus="rexp(this)">
+                    </td>
+                    <td class="td1">
+                        <small>专业</small>
+                    </td>
+                    <td>
+                        <input type="text" placeholder="请输入专业" id="judgezy" class="waitinput" onfocus="rexp(this)">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1">
+                        <small>班级</small>
+                    </td>
+                    <td>
+                        <input type="text" placeholder="请输入班级" id="judgeclass" class="waitinput" onfocus="rexp(this)">
+                    </td>
+                    <td class="td1">
+                        <small>学号</small>
+                    </td>
+                    <td>
+                        <input type="text" placeholder="请输入学号" id="judgenumber"
+                               class="waitinput" onfocus="rexp(this)">
+                    </td>
+                    <td rowspan="2" width="12.6%" style="background: #D6EBFE;">
+                        <small style="font-size:12px">负责项目</small>
+                    </td>
+                    <td rowspan="2">
+                        <div class="select">
+                            <select onmouseover="loaditemstype(this)" class="items">
+                                <option>请选择</option>
+                            </select>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1">
+                        <small>身份证号</small>
+                    </td>
+                    <td>
+                        <input type="text" placeholder="请输入身份证号" id="judgeidcard" class="waitinput"
+                               onfocus="rexp(this)">
+                    </td>
+                    <td class="td1">
+                        <small>联系方式</small>
+                    </td>
+                    <td>
+                        <input type="text" placeholder="请输入联系方式" id="judgetel" class="waitinput" onfocus="rexp(this)">
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    function loaditemstype(e) {
+        if ($(e).children("option").length == 1 && $(e).find("option:selected").text() == "请选择") {
+            if ($(e).attr("class") == "itemstype") {
+                $(str2).appendTo($(e));
+            } else if ($(e).attr("class") == "items") {
+                $(str3).appendTo($(e));
+            }
+        }
+        if ($(e).attr("class") == "itemstype") {
+            $(e).unbind("change").change(function () {
+                var str4 = "<option>请选择</option>";
+                if ($(".itemstype").find("option:selected").text() != "请选择") {
+                    var z = $(".itemstype").find("option:selected").val();
+                    if ($(".items").find("option:selected").text() != '请选择') {
+                        var x = $(".items").find("option:selected").val();
+                        if (parseInt(arr2[x - 1].type_id) != z) {
+                            // $(this).find(".items").find("option:selected").text("请选择");
+                            $(".items").empty();
+                            for (var i = 0; i < arr2.length; i++) {
+                                if (arr2[i].type_id == z) {
+                                    str4 += "<option value=" + arr2[i].item_id + ">" + arr2[i].item_name + "</option>"
+                                }
+                            }
+                            $(str4).appendTo($(".items"));
+                        }
+                    } else {
+                        $(".items").empty();
+                        for (var i = 0; i < arr2.length; i++) {
+                            if (arr2[i].type_id == z) {
+                                str4 += "<option value=" + arr2[i].item_id + ">" + arr2[i].item_name + "</option>"
+                            }
+                        }
+                        $(str4).appendTo($(".items"));
+                    }
+                } else {
+                    for (var i = 0; i < arr2.length; i++) {
+                        str4 += "<option value=" + arr2[i].item_id + ">" + arr2[i].item_name + "</option>";
+                    }
+                    $(".items").empty();
+                    $(str4).appendTo($(".items"));
+                }
+            });
+        }
+        if ($(e).attr("class") == "items") {
+            $(e).unbind("change").change(function () {
+                var str6 = $(e).html();
+                var str7 = $(".itemstype").html();
+                // console.log(str6[1].toString());
+                var str5 = "";
+                var str8 = "";
+                var sum = 0;
+                if ($(e).find("option:selected").text() != "请选择") {
+                    var y = $(e).find("option:selected").val();//item_id
+                    // console.log($($(".items")[0]).find("option:selected").val());
+                    for (var i = 0; i < $(".items").length; i++) {
+                        if ($($(".items")[i]).find("option:selected").val() == y) {
+                            sum++;
+                            if (sum == 2) {
+                                alert("已存在，不可重复添加！！！");
+                                $(e).empty();
+                                $(".itemstype").empty();
+                                $(str6).appendTo($(e));
+                                $(str7).appendTo($(".itemstype"));
+                                return false;
+                            }
+                        }
+                    }
+                    str5 += "<option>请选择</option>";
+                    for (var i = 0; i < arr1.length; i++) {
+                        if (arr1[i].type_id == arr2[y - 1].type_id) {
+                            str5 += "<option selected = \"selected\" value=" + arr1[i].type_id + ">" + arr1[i].type_name + "</option>";
+                        } else {
+                            str5 += "<option value=" + arr1[i].type_id + ">" + arr1[i].type_name + "</option>";
+                        }
+                    }
+                    $(".itemstype").empty();
+                    $(str5).appendTo($(".itemstype"));
+                } else {
+                    str5 += "<option>请选择</option>";
+                    for (var i = 0; i < arr1.length; i++) {
+                        str5 += "<option value=" + arr1[i].type_id + ">" + arr1[i].type_name + "</option>";
+                    }
+                    $(".itemstype").empty();
+                    $(str5).appendTo($(".itemstype"));
+                    str8 += "<option>请选择</option>";
+                    for (var i = 0; i < arr2.length; i++) {
+                        str8 += "<option value=" + arr2[i].item_id + ">" + arr2[i].item_name + "</option>";
+                    }
+                    $(".items").empty();
+                    $(str8).appendTo($(".items"));
+                }
+            });
+        }
+    }
+
+    var arr1 = new Array();
+    var arr2 = new Array();
+    var arr3 = new Array();
+    var str2 = '';
+    var str3 = '';
+
+    function getRootPath() {
+        var pathName = window.document.location.pathname;
+        var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+        return projectName;
+    }
+
+    var path = getRootPath();
+
+    function rexp(e) {
+        var cpLock = true;
+        e.addEventListener("compositionstart",function () {
+            cpLock = false;
+        });
+        e.addEventListener("compositionend",function () {
+            cpLock = true;
+        });
+        e.addEventListener("input",function () {
+            if($(e).attr("id")=="judgenumber"||$(e).attr("id")=="judgeidcard"||$(e).attr("id")=="judgetel"){
+                e.value=e.value.replace(/[^0-9]/g,'');
+            }else{
+                if (cpLock)
+                    checknum(e);
+            }
+        });
+    }
+
+    function checknum(e) {
+        if($(e).attr("id")=="judgesex"||$(e).attr("id")=="judgexy"||$(e).attr("id")=="judgezy"){
+            e.value=e.value.replace(/[^\u4e00-\u9fa5]/g,'');
+        }else if($(e).attr("id")=="judgename"){
+            e.value=e.value.replace(/[^a-zA-Z\u4e00-\u9fa5]/g,'');
+        }else if($(e).attr("id")=="judgeclass"){
+            e.value=e.value.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g,'');
+        }
+    }
+    function uploadpic(e) {
+        var file= e.files[0];
+        //判断浏览器是否支持FileReader
+        if(window.FileReader) {
+            //创建FileReader对象
+            var reader = new FileReader();
+            // 使用URL格式的字符串以表示所读取文件的内容。
+            reader.readAsDataURL(file);
+            //读取开始时触发
+            reader.onloadstart = function () {
+                console.log("开始读取...");
+            }
+            //读取中
+            reader.onprogress = function () {
+                console.log("读取中...");
+            }
+            //读取完成时触发，无论读取成功或失败
+            reader.onloadend = function () {
+                console.log("读取完成...");
+            }
+            //文件读取成功完成时触发
+            reader.onload = function () {
+                console.log("读取成功");
+                document.getElementById("pic").src = reader.result;
+            }
+            //文件读取失败时触发
+            reader.onerror = function () {
+                console.log("读取失败");
+            }
+        }
+    }
+    
+    window.onload = function () {
+        var path = getRootPath();
+        // alert(path);
+        $.ajax(
+            {
+                url: path + "/items/findItemsType",
+                type: "post",
+                dataType: "json",
+                success: function (data) {
+                    // alert(data[0].type_id);
+                    for (var i = 0; i < data.length; i++) {
+                        arr1[i] = data[i];
+                        str2 += "<option value=" + arr1[i].type_id + ">" + arr1[i].type_name + "</option>";
+                    }
+                }
+            }
+        );
+        $.ajax(
+            {
+                url: path + "/items/findItems",
+                type: "post",
+                dataType: "json",
+                success: function (data) {
+                    // alert(data.length);
+                    for (var i = 0; i < data.length; i++) {
+                        arr2[i] = data[i];
+                        str3 += "<option value=" + arr2[i].item_id + ">" + arr2[i].item_name + "</option>";
+                    }
+                }
+            }
+        );
+    }
+
+    function commit() {
+        var flag1 = 0;
+        var flag2 = 0;
+        var str_src = $("#pic").attr("src");
+        if(str_src=="../images/upload.png"){
+            alert("未上传照片，请上传后提交！");
+            return;
+        }
+        for(var i=0;i<$(".waitinput").length;i++){
+            if($($(".waitinput")[i]).val()==""){
+                alert("存在未填写项，请填写后再提交！");
+                return;
+            }
+        }
+        if($(".items").val()=="请选择"||$(".itemstype")=="请选择"){
+            alert("存在未选择项，请填写后再提交！");
+            return;
+        }
+        var judgeinfo = {
+            judge_name:$("#judgename").val(),
+            judge_class:$("#judgeclass").val(),
+            judge_sex:$("#judgesex").val(),
+            judge_number:$("#judgenumber").val(),
+            judge_xy:$("#judgexy").val(),
+            judge_zy:$("#judgezy").val(),
+            judge_tel:$("#judgetel").val(),
+            judge_idcard:$("#judgeidcard").val(),
+            type_id:$(".itemstype").val(),
+            item_id:$(".items").val()
+        };
+        var formData = new FormData();
+        formData.append("upload",document.getElementById("inputFile").files[0]);
+        formData.append("judge_number",$("#judgenumber").val());
+        // console.log(formData);
+        $("#loading").css({display:"block",zIndex:"10"});
+        $("#infotable").css("display","none");
+        $.ajax({
+            url:path+"/judge/saveJudgeInfo",
+            type:"post",
+            dataType:"json",
+            contentType:"application/json;charset=UTF-8",
+            data:JSON.stringify(judgeinfo),
+            success:function (data) {
+                if(flag1==0){
+                    flag1++;
+                    if(data.result_status=="success"&&flag2==0){
+                        flag2++;
+                    }else if(data.result_status=="failed"&&flag2==0){
+                        alert("提交失败，请重新尝试！");
+                        $("#loading").css({display:"none",zIndex:"0"});
+                        $("#infotable").css("display","block");
+                    }
+                }else{
+                    if(data.result_status=="success"&&flag2==0){
+                        alert("提交失败，请重新尝试！");
+                        $("#loading").css({display:"none",zIndex:"0"});
+                        $("#infotable").css("display","block");
+                    }else if(data.result_status=="success"&&flag2==1){
+                        $("#loading").css({display:"none",zIndex:"0"});
+                        alert("提交成功！");
+                        window.location.href = "judge.html";
+                    }else if(data.result_status=="failed"&&flag2==1){
+                        alert("提交失败，请重新尝试！");
+                        $("#loading").css({display:"none",zIndex:"0"});
+                        $("#infotable").css("display","block");
+                    }
+                }
+            }
+        });
+        $.ajax({
+            url:path+"/judge/saveImage",
+            type:"post",
+            data:formData,
+            cache:false,
+            contentType:false,
+            processData: false,
+            success:function (data) {
+                if(flag1==0){
+                    flag1++;
+                    if(data.result_status=="success"&&flag2==0){
+                        flag2++;
+                    }else if(data.result_status=="failed"&&flag2==0){
+                        alert("提交失败，请重新尝试！");
+                        $("#loading").css({display:"none",zIndex:"0"});
+                        $("#infotable").css("display","block");
+                    }
+                }else{
+                    if(data.result_status=="success"&&flag2==0){
+                        alert("提交失败，请重新尝试！");
+                        $("#loading").css({display:"none",zIndex:"0"});
+                        $("#infotable").css("display","block");
+                    }else if(data.result_status=="success"&&flag2==1){
+                        $("#loading").css({display:"none",zIndex:"0"});
+                        alert("提交成功！");
+                        window.location.href = "judge.html";
+                    }else if(data.result_status=="failed"&&flag2==1){
+                        alert("提交失败，请重新尝试！");
+                        $("#loading").css({display:"none",zIndex:"0"});
+                        $("#infotable").css("display","block");
+                    }
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

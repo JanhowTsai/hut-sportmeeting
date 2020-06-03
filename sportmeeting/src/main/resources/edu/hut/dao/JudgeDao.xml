@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.hut.dao.JudgeDao">
+    <insert id="saveJudgeInfo" parameterType="edu.hut.domain.JudgeInfo">
+        insert into judge
+        (
+            judge_name,
+            judge_sex,
+            judge_xy,
+            judge_zy,
+            judge_class,
+            judge_number,
+            judge_idcard,
+            judge_tel,
+            type_id,
+            item_id
+        )values
+        (
+          #{judgeInfo.judge_name},
+          #{judgeInfo.judge_sex},
+          #{judgeInfo.judge_xy},
+          #{judgeInfo.judge_zy},
+          #{judgeInfo.judge_class},
+          #{judgeInfo.judge_number},
+          #{judgeInfo.judge_idcard},
+          #{judgeInfo.judge_tel},
+          #{judgeInfo.type_id},
+          #{judgeInfo.item_id}
+        )
+    </insert>
+    <insert id="saveImage" parameterType="java.lang.String">
+        insert into judge_pic (pic_address,judge_number) values (#{pic_address},#{judge_number})
+    </insert>
+    <select id="findJudgement" resultType="edu.hut.domain.JudgeInfo" parameterType="java.lang.Integer">
+        select a.judge_number,a.judge_name,a.jid from judge a where a.item_id = #{item_id}
+    </select>
+    <select id="findMatchNum" parameterType="java.lang.Integer" resultType="int">
+        select match_num from match_items where item_id = #{item_id};
+    </select>
+    <select id="findJudgeListNum" resultType="java.lang.Integer" parameterType="edu.hut.domain.PageOfJudgeList">
+        select count(*) from judge where 1=1
+        <if test="pageOfJudgeList.judgeName!=null and pageOfJudgeList.judgeNumber!=null">
+            and judge_name = #{pageOfJudgeList.judgeName} and judge_number = #{pageOfJudgeList.judgeNumber}
+        </if>
+        <if test="pageOfJudgeList.judgeName==null and pageOfJudgeList.judgeNumber!=null">
+            and judge_number = #{pageOfJudgeList.judgeNumber}
+        </if>
+        <if test="pageOfJudgeList.judgeName!=null and pageOfJudgeList.judgeNumber==null">
+            and judge_name = #{pageOfJudgeList.judgeName}
+        </if>
+    </select>
+    <select id="findJudgeList" resultType="java.util.HashMap" parameterType="edu.hut.domain.PageOfJudgeList">
+        select * from judge where 1=1
+        <if test="pageOfJudgeList.judgeName!=null and pageOfJudgeList.judgeNumber!=null">
+            and judge_name = #{pageOfJudgeList.judgeName} and judge_number = #{pageOfJudgeList.judgeNumber}
+        </if>
+        <if test="pageOfJudgeList.judgeName==null and pageOfJudgeList.judgeNumber!=null">
+            and judge_number = #{pageOfJudgeList.judgeNumber}
+        </if>
+        <if test="pageOfJudgeList.judgeName!=null and pageOfJudgeList.judgeNumber==null">
+            and judge_name = #{pageOfJudgeList.judgeName}
+        </if>
+        limit #{pageOfJudgeList.startIndex},#{pageOfJudgeList.pageNum}
+    </select>
+    <resultMap id="judgeDetail" type="java.util.HashMap">
+        <id property="jid" column="jid"></id>
+        <result property="judge_name" column="judge_name"></result>
+        <result property="judge_number" column="judge_number"></result>
+        <result property="judge_sex" column="judge_sex"></result>
+        <result property="judge_xy" column="judge_xy"></result>
+        <result property="judge_zy" column="judge_zy"></result>
+        <result property="judge_class" column="judge_class"></result>
+        <result property="judge_idcard" column="judge_idcard"></result>
+        <result property="judge_tel" column="judge_tel"></result>
+        <result property="pic_address" column="pic_address"></result>
+        <result property="item_name" column="item_name"></result>
+        <result property="type_name" column="type_name"></result>
+    </resultMap>
+    <select id="findJudgeInfoDetail" resultMap="judgeDetail" parameterType="java.lang.Integer">
+        select
+        a.jid as jid,
+        a.judge_name as judge_name,
+        a.judge_number as judge_number,
+        a.judge_sex as judge_sex,
+        a.judge_xy as judge_xy,
+        a.judge_zy as judge_zy,
+        a.judge_class as judge_class,
+        a.judge_idcard as judge_idcard,
+        a.judge_tel as judge_tel,
+        b.pic_address as pic_address,
+        c.item_name as item_name,
+        d.type_name as type_name
+        from judge a,judge_pic b,items c,items_type d where
+        a.jid = #{jid} and a.type_id = d.type_id and a.judge_number = b.judge_number and a.item_id = c.item_id
+    </select>
+</mapper>

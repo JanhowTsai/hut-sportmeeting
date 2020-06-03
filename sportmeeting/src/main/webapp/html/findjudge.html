@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../js/jquery-1.5.1.js"></script>
+    <style type="text/css">
+        body {
+            font-size: 20px;
+            /*background-color: #eee;*/
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #999;
+            -webkit-border-radius: 5px;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:vertical:hover {
+            background-color: #666;
+        }
+
+        ::-webkit-scrollbar-thumb:vertical:active {
+            background-color: #333;
+        }
+
+        ::-webkit-scrollbar-button {
+            display: none;
+        }
+
+        ::-webkit-scrollbar-track {
+            background-color: #f1f1f1;
+        }
+        #top{
+            margin-top: 15px;
+            border: 2px solid #98C9EE;
+            border-radius: 4px;
+            height: 90px;
+            width: 800px;
+        }
+        .ziti{
+            text-align: center;
+            font-size: 13px;
+            width: 150px;
+            height: 40px;
+            line-height: 40px;
+        }
+        #top span{
+            font-size: 13px;
+        }
+        .condition{
+            height: 30px;
+            width: 200px;
+            text-align: center;
+            border-radius: 8px;
+            outline: none;
+            border: 2px solid #DDDDDD;
+        }
+        .sbtn{
+            width: 50px;
+            height: 28px;
+            border-radius:4px;
+            border: 0px solid black;
+            outline: none;
+            cursor: pointer;
+            background-color: #e6e6e6;
+            font-size: 60%;
+            line-height: 28px;
+        }
+        .sbtn:hover{
+            background-color: #B0AFAF;
+        }
+        #mid{
+            margin-left: 100px;
+            margin-top: 5px;
+            width: 800px;
+            height: 360px;
+            border: 2px solid #98C9EE;;
+        }
+        #list{
+            width: 100%;
+            border-spacing: 0px;
+            border-collapse: collapse;
+        }
+        #list tr{
+            width: 100%;
+            border-bottom: 2px solid #98C9EE;;
+        }
+        #list td{
+            text-align: center;
+            font-size: 13px;
+            height: 30px;
+        }
+        #list tr td:first-child{
+            width: 40px;
+            border-right:2px solid #98C9EE;
+        }
+        #list tr td:last-child{
+            width: 60px;
+            border-left:2px solid #98C9EE;
+        }
+        #list tr td:nth-last-child(2){
+            width: 230px;
+            border-left:2px solid #98C9EE;
+        }
+        #list tr td:nth-last-child(3){
+            width: 230px;
+            border-left:2px solid #98C9EE;
+        }
+        #list thead tr td{
+            background: #D6EBFE;
+        }
+        #list tbody tr:last-child{
+            /*border-bottom: none;*/
+        }
+        a{
+            /*text-decoration: none;*/
+            font-size: 14px;
+            color: black;
+        }
+        #bottom{
+            margin-top: 10px;
+            margin-left: 400px;
+        }
+        #bottom span{
+            font-size: 14px;
+        }
+        #bottom input{
+            width: 42px;
+            font-size: 13px;
+            line-height: 23px;
+            cursor: pointer;
+            height: 23px;
+            text-align: center;
+        }
+        #fugai{
+            width: 1185px;
+            height: 560px;
+            background: darkgrey;
+            z-index: 5;
+            opacity: 5%;
+            position: absolute;
+            top: 10px;
+            display: none;
+        }
+        #tanchu {
+            width: 1020px;
+            height: 300px;
+            background: white;
+            z-index: 6;
+            position: absolute;
+            left: 90px;
+            top: 120px;
+            border: 2px solid #DDDDDD;
+            border-radius: 8px;
+            display: none;
+        }
+        #contentarea{
+            margin-left: 10px;
+            margin-top: 50px;
+        }
+        #tanchuclose{
+            text-align: center;
+            margin: 0 auto;
+            margin-top: 40px;
+        }
+        #tanchuclose input{
+            width: 50px;
+            height: 28px;
+            border-radius:4px;
+            border: 0px solid black;
+            outline: none;
+            cursor: pointer;
+            background-color: #e6e6e6;
+            font-size: 60%;
+            line-height: 28px;
+        }
+        #tanchuclose input:hover{
+            background-color: #B0AFAF;
+        }
+        #tanchutable{
+            width: 1000px;
+            border-spacing: 0px;
+            border-collapse: collapse;
+        }
+        #tanchutable td{
+            text-align: center;
+            font-size: 12px;
+            border: 2px solid #98C9EE;
+            height: 36px;
+        }
+        #tanchutable input{
+            width: 100%;
+            outline: none;
+            text-align: center;
+            height: 36px;
+            line-height: 36px;
+            border: none;
+            cursor: default;
+            padding: 0;
+        }
+        #tanchutable .td1{
+            background: #D6EBFE;
+            width: 80px;
+        }
+        #tanchutable small{
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+<div style="margin-left: 30px">
+    <div>
+        <strong style="font-size: 20px;color: #0e90d2; font-weight: 700">查询裁判</strong> /
+        <small style="font-size: 80%">FindJudgement</small>
+    </div>
+    <div style="margin-left: 100px">
+        <div id="top">
+            <div class="ziti">  查 询 条 件 ：</div>
+            <div style="display: flex;flex-direction: row;">
+                <div style="margin-left: 100px">
+                    <span>学 号 : </span>
+                    <input type="text" class="condition" id="judgenumber">
+                </div>
+                <div style="margin-left: 30px">
+                    <span>姓 名 : </span>
+                    <input type="text" class="condition" id="judgename">
+                </div>
+                <div style="margin-left: 30px">
+                    <input type="button" value="查找" class="sbtn" onclick="searchjudgelist()">
+                </div>
+                <div style="margin-left: 10px;">
+                    <input type="button" value="清空条件" class="sbtn" onclick="delcondition()" style="width: 60px;">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="mid">
+        <table id="list">
+            <thead>
+            <tr>
+                <td>序号</td>
+                <td>学号</td>
+                <td>姓名</td>
+                <td>班级</td>
+                <td>操作</td>
+            </tr>
+            </thead>
+            <tbody id="body"></tbody>
+        </table>
+    </div>
+    <div id="bottom">
+        <div>
+            <a href="javascript:void(0)" onclick="first()">首页</a>
+            <a href="javascript:void(0)" onclick="uppage()">上一页</a>
+            <a href="javascript:void(0)" onclick="downpage()">下一页</a>
+            <a href="javascript:void(0)" onclick="last()">尾页</a>
+            <span style="margin-left: 150px">
+                跳转至第
+                <input type="text" style="width: 20px;height: 23px" value="1" id="current">
+                页 / <a href="javascript:void(0)" id="totalnum"></a>
+                <input style="display: none" value="" id="totalPageNum">
+            </span>
+            <input type="button" value="跳转" onclick="jump()">
+        </div>
+    </div>
+</div>
+<div id="fugai">
+
+</div>
+<div id="tanchu">
+    <div id="contentarea">
+        <table id="tanchutable">
+            <tbody>
+            <tr>
+                <td rowspan="4" width="10.5%" style="font-size: 0;padding: 0;">
+                    <img src="../images/upload.png" width="115px" height="160px" style="cursor: pointer" id="pic">
+                </td>
+                <td class="td1">
+                    <small>姓名</small>
+                </td>
+                <td>
+                    <input type="text" id="judgenametext" class="waitinput" readonly="readonly">
+                </td>
+                <td class="td1">
+                    <small>性别</small>
+                </td>
+                <td>
+                    <input type="text" id="judgesex" class="waitinput" readonly="readonly">
+                </td>
+                <td rowspan="2" width="12.6%" style="background: #D6EBFE;">
+                    <small style="font-size:13px">负责项目类型</small>
+                </td>
+                <td rowspan="2">
+                    <input type="text" readonly="readonly" id="itemtype">
+                </td>
+            </tr>
+            <tr>
+                <td class="td1">
+                    <small>学院</small>
+                </td>
+                <td>
+                    <input type="text" id="judgexy" class="waitinput" readonly="readonly">
+                </td>
+                <td class="td1">
+                    <small>专业</small>
+                </td>
+                <td>
+                    <input type="text" id="judgezy" class="waitinput" readonly="readonly">
+                </td>
+            </tr>
+            <tr>
+                <td class="td1">
+                    <small>班级</small>
+                </td>
+                <td>
+                    <input type="text" id="judgeclass" class="waitinput" readonly="readonly">
+                </td>
+                <td class="td1">
+                    <small>学号</small>
+                </td>
+                <td>
+                    <input type="text" id="judgenumbertext" class="waitinput" readonly="readonly">
+                </td>
+                <td rowspan="2" width="12.6%" style="background: #D6EBFE;">
+                    <small style="font-size:13px">负责项目名称</small>
+                </td>
+                <td rowspan="2">
+                    <input type="text" readonly="readonly" id="itemname">
+                </td>
+            </tr>
+            <tr>
+                <td class="td1">
+                    <small>身份证号</small>
+                </td>
+                <td>
+                    <input type="text" id="judgeidcard" class="waitinput" readonly="readonly">
+                </td>
+                <td class="td1">
+                    <small>联系方式</small>
+                </td>
+                <td>
+                    <input type="text" id="judgetel" class="waitinput" readonly="readonly">
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div id="tanchuclose">
+        <input type="button" onclick="closearea()" value="关闭">
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    function delcondition() {
+        $(".condition").val("");
+        searchjudgelist();
+    }
+    function searchjudgelist() {
+        var searchplaninfo = {
+            judgenumber:$("#judgenumber").val(),
+            judgename:$("#judgename").val(),
+            currentPageIndex:"1"
+        };
+        var currentPageIndex = 1;
+        $.ajax({
+            url:path+"/judge/findJudgeList",
+            type:"post",
+            dataType:"json",
+            contentType:"application/json;charset=UTF-8",
+            data:JSON.stringify(searchplaninfo),
+            success:function (data) {
+                if(data.length!=0){
+                    var str = "";
+                    for(var i=0;i<data.length;i++){
+                        str+="<tr>\n" +
+                            "                <td>"+((currentPageIndex-1)*10+i+1)+"</td>\n" +
+                            "                <td>"+data[i].judge_number+"<input style='display: none' value='"+data[i].jid+"'>"+"</td>\n" +
+                            "                <td>"+data[i].judge_name+"</td>\n" +
+                            "                <td>"+data[i].judge_class+"</td>\n"+
+                            "                <td>\n" +
+                            "                    <input type=\"button\" value=\"查看\" class=\"sbtn\" onclick=\"look(this)\">\n" +
+                            "                </td>\n" +
+                            "            </tr>";
+                    }
+                    $("#body").html("");
+                    $(str).appendTo($("#body"));
+                    $("#current").val(currentPageIndex);
+                    var totalnum = data[0].totalPage;
+                    var totalPageNum = data[0].totalPageNum;
+                    $("#totalnum").html(totalnum);
+                    $("#totalPageNum").val(totalPageNum);
+                }else {
+                    alert("此条件下不存在数据！");
+                    window.location.href="findjudge.html";
+                }
+            }
+        });
+    }
+    function closearea() {
+        $("#fugai").css("display","none");
+        $("#tanchu").css("display","none");
+    }
+    function look(e) {
+        var jid = $($(e).parents("tr").find("input")[0]).val();
+        var html_content = {
+            jid : jid
+        };
+        $.ajax({
+            url:path+"/judge/findJudgeInfoDetail",
+            type:"post",
+            dataType:"json",
+            contentType:"application/json;charset=UTF-8",
+            data:JSON.stringify(html_content),
+            success:function (data) {
+                console.log(data);
+                $("#judgexy").val(data.judge_xy);
+                $("#judgenumbertext").val(data.judge_number);
+                $("#judgezy").val(data.judge_zy);
+                $("#judgesex").val(data.judge_sex);
+                $("#judgenametext").val(data.judge_name);
+                $("#judgeidcard").val(data.judge_idcard);
+                $("#judgeclass").val(data.judge_class);
+                $("#judgetel").val(data.judge_tel);
+                $("#itemname").val(data.item_name);
+                $("#itemtype").val(data.type_name);
+                var pic = "../"+data.pic_address;
+                $("#pic").attr("src",pic);
+                $("#fugai").css("display","block");
+                $("#tanchu").css("display","block");
+            }
+        });
+    }
+    function jump() {
+        var currentPageIndex = $("#current").val();
+        if(currentPageIndex>=1&&currentPageIndex<=$("#totalnum").text()-0){
+            if($("#starttime").val()!=""||$("#endtime").val()!=""){
+                var searchnoticeinfo = {
+                    judgenumber:$("#judgenumber").val(),
+                    judgename:$("#judgename").val(),
+                    currentPageIndex:currentPageIndex
+                };
+                $.ajax({
+                    url:path+"/judge/findJudgeList",
+                    type:"post",
+                    dataType:"json",
+                    contentType:"application/json;charset=UTF-8",
+                    data:JSON.stringify(searchnoticeinfo),
+                    success:function (data) {
+                        // console.log(data);
+                        var str = "";
+                        for(var i=0;i<data.length;i++){
+                            str+="<tr>\n" +
+                                "                <td>"+((currentPageIndex-1)*10+i+1)+"</td>\n" +
+                                "                <td>"+data[i].judge_number+"<input style='display: none' value='"+data[i].jid+"'>"+"</td>\n" +
+                                "                <td>"+data[i].judge_name+"</td>\n" +
+                                "                <td>"+data[i].judge_class+"</td>\n"+
+                                "                <td>\n" +
+                                "                    <input type=\"button\" value=\"查看\" class=\"sbtn\" onclick=\"look(this)\">\n" +
+                                "                </td>\n" +
+                                "            </tr>";
+                        }
+                        $("#body").html("");
+                        $(str).appendTo($("#body"));
+                        $("#current").val(currentPageIndex);
+                    }
+                });
+            }else {
+                var info = {
+                    currentPageIndex:currentPageIndex
+                };
+                $.ajax({
+                    url:path+"/judge/findJudgeList",
+                    type:"post",
+                    dataType:"json",
+                    contentType:"application/json;charset=UTF-8",
+                    data:JSON.stringify(info),
+                    success:function (data) {
+                        // console.log(data);
+                        var str = "";
+                        for(var i=0;i<data.length;i++){
+                            str+="<tr>\n" +
+                                "                <td>"+((currentPageIndex-1)*10+i+1)+"</td>\n" +
+                                "                <td>"+data[i].judge_number+"<input style='display: none' value='"+data[i].jid+"'>"+"</td>\n" +
+                                "                <td>"+data[i].judge_name+"</td>\n" +
+                                "                <td>"+data[i].judge_class+"</td>\n"+
+                                "                <td>\n" +
+                                "                    <input type=\"button\" value=\"查看\" class=\"sbtn\" onclick=\"look(this)\">\n" +
+                                "                </td>\n" +
+                                "            </tr>";
+                        }
+                        $("#body").html("");
+                        $(str).appendTo($("#body"));
+                        $("#current").val(currentPageIndex);
+                    }
+                });
+            }
+        }else {
+            alert("请输入正确的页码！");
+            return;
+        }
+    }
+    function last() {
+        if($("#starttime").val()!=""||$("#endtime").val()!=""){
+            var currentPageIndex = $("#totalnum").text();
+            var searchnoticeinfo = {
+                judgenumber:$("#judgenumber").val(),
+                judgename:$("#judgename").val(),
+                currentPageIndex:currentPageIndex
+            };
+            $.ajax({
+                url:path+"/judge/findJudgeList",
+                type:"post",
+                dataType:"json",
+                contentType:"application/json;charset=UTF-8",
+                data:JSON.stringify(searchnoticeinfo),
+                success:function (data) {
+                    // console.log(data);
+                    var str = "";
+                    for(var i=0;i<data.length;i++){
+                        str+="<tr>\n" +
+                            "                <td>"+((currentPageIndex-1)*10+i+1)+"</td>\n" +
+                            "                <td>"+data[i].judge_number+"<input style='display: none' value='"+data[i].jid+"'>"+"</td>\n" +
+                            "                <td>"+data[i].judge_name+"</td>\n" +
+                            "                <td>"+data[i].judge_class+"</td>\n"+
+                            "                <td>\n" +
+                            "                    <input type=\"button\" value=\"查看\" class=\"sbtn\" onclick=\"look(this)\">\n" +
+                            "                </td>\n" +
+                            "            </tr>";
+                    }
+                    $("#body").html("");
+                    $(str).appendTo($("#body"));
+                    $("#current").val(currentPageIndex);
+                }
+            });
+        }else {
+            var currentPageIndex = $("#totalnum").text();
+            var info = {
+                currentPageIndex:currentPageIndex
+            };
+            $.ajax({
+                url:path+"/judge/findJudgeList",
+                type:"post",
+                dataType:"json",
+                contentType:"application/json;charset=UTF-8",
+                data:JSON.stringify(info),
+                success:function (data) {
+                    // console.log(data);
+                    var str = "";
+                    for(var i=0;i<data.length;i++){
+                        str+="<tr>\n" +
+                            "                <td>"+((currentPageIndex-1)*10+i+1)+"</td>\n" +
+                            "                <td>"+data[i].judge_number+"<input style='display: none' value='"+data[i].jid+"'>"+"</td>\n" +
+                            "                <td>"+data[i].judge_name+"</td>\n" +
+                            "                <td>"+data[i].judge_class+"</td>\n"+
+                            "                <td>\n" +
+                            "                    <input type=\"button\" value=\"查看\" class=\"sbtn\" onclick=\"look(this)\">\n" +
+                            "                </td>\n" +
+                            "            </tr>";
+                    }
+                    $("#body").html("");
+                    $(str).appendTo($("#body"));
+                    $("#current").val(currentPageIndex);
+                }
+            });
+        }
+    }
+    function first() {
+        if($("#starttime").val()!=""||$("#endtime").val()!=""){
+            var searchnoticeinfo = {
+                judgenumber:$("#judgenumber").val(),
+                judgename:$("#judgename").val(),
+                currentPageIndex:"1"
+            };
+            var currentPageIndex = 1;
+            $.ajax({
+                url:path+"/judge/findJudgeList",
+                type:"post",
+                dataType:"json",
+                contentType:"application/json;charset=UTF-8",
+                data:JSON.stringify(searchnoticeinfo),
+                success:function (data) {
+                    // console.log(data);
+                    var str = "";
+                    for(var i=0;i<data.length;i++){
+                        str+="<tr>\n" +
+                            "                <td>"+((currentPageIndex-1)*10+i+1)+"</td>\n" +
+                            "                <td>"+data[i].judge_number+"<input style='display: none' value='"+data[i].jid+"'>"+"</td>\n" +
+                            "                <td>"+data[i].judge_name+"</td>\n" +
+                            "                <td>"+data[i].judge_class+"</td>\n"+
+                            "                <td>\n" +
+                            "                    <input type=\"button\" value=\"查看\" class=\"sbtn\" onclick=\"look(this)\">\n" +
+                            "                </td>\n" +
+                            "            </tr>";
+                    }
+                    $("#body").html("");
+                    $(str).appendTo($("#body"));
+                    $("#current").val(currentPageIndex);
+                    var totalnum = data[0].totalPage;
+                    var totalPageNum = data[0].totalPageNum;
+                    $("#totalnum").html(totalnum);
+                    $("#totalPageNum").val(totalPageNum);
+                }
+            });
+        }else {
+            var info = {
+                currentPageIndex:"1"
+            };
+            var currentPageIndex = 1;
+            $.ajax({
+                url:path+"/judge/findJudgeList",
+                type:"post",
+                dataType:"json",
+                contentType:"application/json;charset=UTF-8",
+                data:JSON.stringify(info),
+                success:function (data) {
+                    // console.log(data);
+                    var str = "";
+                    for(var i=0;i<data.length;i++){
+                        str+="<tr>\n" +
+                            "                <td>"+((currentPageIndex-1)*10+i+1)+"</td>\n" +
+                            "                <td>"+data[i].judge_number+"<input style='display: none' value='"+data[i].jid+"'>"+"</td>\n" +
+                            "                <td>"+data[i].judge_name+"</td>\n" +
+                            "                <td>"+data[i].judge_class+"</td>\n"+
+                            "                <td>\n" +
+                            "                    <input type=\"button\" value=\"查看\" class=\"sbtn\" onclick=\"look(this)\">\n" +
+                            "                </td>\n" +
+                            "            </tr>";
+                    }
+                    $("#body").html("");
+                    $(str).appendTo($("#body"));
+                    $("#current").val(currentPageIndex);
+                    var totalnum = data[0].totalPage;
+                    var totalPageNum = data[0].totalPageNum;
+                    $("#totalnum").html(totalnum);
+                    $("#totalPageNum").val(totalPageNum);
+                }
+            });
+        }
+    }
+    function downpage() {
+        if($("#starttime").val()!=""||$("#endtime").val()!=""){
+            var tr = $("tr")[1];
+            var currentPageIndex;
+            var rownum = $(tr).find("td")[0].innerHTML;
+            // console.log(rownum);
+            // console.log($("#totalnum").text());
+            if(rownum>($("#totalnum").text()-1)*10){
+                currentPageIndex = $("#totalnum").text();
+                return;
+            }else {
+                currentPageIndex = Math.ceil(rownum/10)+1;
+            }
+            var searchnoticeinfo = {
+                judgenumber:$("#judgenumber").val(),
+                judgename:$("#judgename").val(),
+                currentPageIndex:currentPageIndex
+            };
+            $.ajax({
+                url:path+"/judge/findJudgeList",
+                type:"post",
+                dataType:"json",
+                contentType:"application/json;charset=UTF-8",
+                data:JSON.stringify(searchnoticeinfo),
+                success:function (data) {
+                    // console.log(data);
+                    var str = "";
+                    for(var i=0;i<data.length;i++){
+                        str+="<tr>\n" +
+                            "                <td>"+((currentPageIndex-1)*10+i+1)+"</td>\n" +
+                            "                <td>"+data[i].judge_number+"<input style='display: none' value='"+data[i].jid+"'>"+"</td>\n" +
+                            "                <td>"+data[i].judge_name+"</td>\n" +
+                            "                <td>"+data[i].judge_class+"</td>\n"+
+                            "                <td>\n" +
+                            "                    <input type=\"button\" value=\"查看\" class=\"sbtn\" onclick=\"look(this)\">\n" +
+                            "                </td>\n" +
+                            "            </tr>";
+                    }
+                    $("#body").html("");
+                    $(str).appendTo($("#body"));
+                    $("#current").val(currentPageIndex);
+                }
+            });
+        }else {
+            var tr = $("tr")[1];
+            var currentPageIndex;
+            var rownum = $(tr).find("td")[0].innerHTML;
+            // console.log(rownum);
+            // console.log($("#totalnum").text());
+            if(rownum>($("#totalnum").text()-1)*10){
+                currentPageIndex = $("#totalnum").text();
+                return;
+            }else {
+                currentPageIndex = Math.ceil(rownum/10)+1;
+            }
+            var info = {
+                currentPageIndex:currentPageIndex
+            };
+            $.ajax({
+                url:path+"/judge/findJudgeList",
+                type:"post",
+                dataType:"json",
+                contentType:"application/json;charset=UTF-8",
+                data:JSON.stringify(info),
+                success:function (data) {
+                    // console.log(data);
+                    var str = "";
+                    for(var i=0;i<data.length;i++){
+                        str+="<tr>\n" +
+                            "                <td>"+((currentPageIndex-1)*10+i+1)+"</td>\n" +
+                            "                <td>"+data[i].judge_number+"<input style='display: none' value='"+data[i].jid+"'>"+"</td>\n" +
+                            "                <td>"+data[i].judge_name+"</td>\n" +
+                            "                <td>"+data[i].judge_class+"</td>\n"+
+                            "                <td>\n" +
+                            "                    <input type=\"button\" value=\"查看\" class=\"sbtn\" onclick=\"look(this)\">\n" +
+                            "                </td>\n" +
+                            "            </tr>";
+                    }
+                    $("#body").html("");
+                    $(str).appendTo($("#body"));
+                    $("#current").val(currentPageIndex);
+                }
+            });
+        }
+    }
+    function uppage() {
+        if($("#starttime").val()!=""||$("#endtime").val()!=""){
+            var tr = $("tr")[$("tr").length-1];
+            var currentPageIndex;
+            var rownum = $(tr).find("td")[0].innerHTML;
+            if(rownum<=10){
+                currentPageIndex = 1;
+                return;
+            }else {
+                currentPageIndex = Math.ceil(rownum/10)-1;
+            }
+            var searchnoticeinfo = {
+                judgenumber:$("#judgenumber").val(),
+                judgename:$("#judgename").val(),
+                currentPageIndex:currentPageIndex
+            };
+            $.ajax({
+                url:path+"/judge/findJudgeList",
+                type:"post",
+                dataType:"json",
+                contentType:"application/json;charset=UTF-8",
+                data:JSON.stringify(searchnoticeinfo),
+                success:function (data) {
+                    // console.log(data);
+                    var str = "";
+                    for(var i=0;i<data.length;i++){
+                        str+="<tr>\n" +
+                            "                <td>"+((currentPageIndex-1)*10+i+1)+"</td>\n" +
+                            "                <td>"+data[i].judge_number+"<input style='display: none' value='"+data[i].jid+"'>"+"</td>\n" +
+                            "                <td>"+data[i].judge_name+"</td>\n" +
+                            "                <td>"+data[i].judge_class+"</td>\n"+
+                            "                <td>\n" +
+                            "                    <input type=\"button\" value=\"查看\" class=\"sbtn\" onclick=\"look(this)\">\n" +
+                            "                </td>\n" +
+                            "            </tr>";
+                    }
+                    $("#body").html("");
+                    $(str).appendTo($("#body"));
+                    $("#current").val(currentPageIndex);
+                }
+            });
+        }else {
+            var tr = $("tr")[$("tr").length-1];
+            var currentPageIndex;
+            var rownum = $(tr).find("td")[0].innerHTML;
+            if(rownum<=10){
+                currentPageIndex = 1;
+                return;
+            }else {
+                currentPageIndex = Math.ceil(rownum/10)-1;
+            }
+            var info = {
+                currentPageIndex:currentPageIndex
+            };
+            $.ajax({
+                url:path+"/judge/findJudgeList",
+                type:"post",
+                dataType:"json",
+                contentType:"application/json;charset=UTF-8",
+                data:JSON.stringify(info),
+                success:function (data) {
+                    // console.log(data);
+                    var str = "";
+                    for(var i=0;i<data.length;i++){
+                        str+="<tr>\n" +
+                            "                <td>"+((currentPageIndex-1)*10+i+1)+"</td>\n" +
+                            "                <td>"+data[i].judge_number+"<input style='display: none' value='"+data[i].jid+"'>"+"</td>\n" +
+                            "                <td>"+data[i].judge_name+"</td>\n" +
+                            "                <td>"+data[i].judge_class+"</td>\n"+
+                            "                <td>\n" +
+                            "                    <input type=\"button\" value=\"查看\" class=\"sbtn\" onclick=\"look(this)\">\n" +
+                            "                </td>\n" +
+                            "            </tr>";
+                    }
+                    $("#body").html("");
+                    $(str).appendTo($("#body"));
+                    $("#current").val(currentPageIndex);
+                }
+            });
+        }
+    }
+    function getRootPath() {
+        var pathName = window.document.location.pathname;
+        var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+        return projectName;
+    }
+
+    var path = getRootPath();
+
+    window.onload = function firstload() {
+        var info = {
+            currentPageIndex:"1"
+        };
+        var currentPageIndex = 1;
+        $.ajax({
+            url:path+"/judge/findJudgeList",
+            type:"post",
+            dataType:"json",
+            contentType:"application/json;charset=UTF-8",
+            data:JSON.stringify(info),
+            success:function (data) {
+                // console.log(data);
+                var str = "";
+                for(var i=0;i<data.length;i++){
+                    str+="<tr>\n" +
+                        "                <td>"+((currentPageIndex-1)*10+i+1)+"</td>\n" +
+                        "                <td>"+data[i].judge_number+"<input style='display: none' value='"+data[i].jid+"'>"+"</td>\n" +
+                        "                <td>"+data[i].judge_name+"</td>\n" +
+                        "                <td>"+data[i].judge_class+"</td>\n"+
+                        "                <td>\n" +
+                        "                    <input type=\"button\" value=\"查看\" class=\"sbtn\" onclick=\"look(this)\">\n" +
+                        "                </td>\n" +
+                        "            </tr>";
+                }
+                $(str).appendTo($("#body"));
+                var totalnum = data[0].totalPage;
+                var totalPageNum = data[0].totalPageNum;
+                $("#totalnum").html(totalnum);
+                $("#totalPageNum").val(totalPageNum);
+            }
+        });
+    }
+</script>
+</html>
